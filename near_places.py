@@ -8,6 +8,7 @@ load_dotenv(find_dotenv())
 API_KEY = os.getenv("API_KEY")
 
 atl_locations = ['downtown','Buckhead','Sandy Springs','Johns Creek','Norcross']
+location_types = ['restaurant','museum','park','university','store','city_hall','amusement_park','library']
 
 # Get the lat and lng of input places
 # If places is limited, the geometry can be hard coded
@@ -21,7 +22,7 @@ def getGeometry(atl_location):
     headers = {}
 
     response = requests.request("GET", url, headers=headers, data=payload).json()
-    print(response)
+    # print(response)
     try:
         geometry = response['candidates'][0]['geometry']['location']
     except:
@@ -31,20 +32,20 @@ def getGeometry(atl_location):
     return lat, lng
 
 # Use the Nearby Search Request to find near places
-# Currently hardcode the search type as restaurant
-def getNearPlace():
+# Input is the type of nearby locations
+def getNearPlace(location_type):
     lat, lng = getGeometry(atl_locations[0])
-    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat}%2C{lng}&radius=1000&type=restaurant&key={API_KEY}"
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat}%2C{lng}&radius=1000&type={location_type}&key={API_KEY}"
 
     payload={}
     headers = {}
 
     response = requests.request("GET", url, headers=headers, data=payload).json()
-    #
+    # Get the frist five elements of return locations
     places = response['results'][0:5]
     print(places[0])
 
-getNearPlace()
+getNearPlace(location_types[0])
 
 
 
