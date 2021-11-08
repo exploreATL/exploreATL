@@ -33,8 +33,7 @@ def getGeometry(atl_location):
 
 # Use the Nearby Search Request to find near places
 # Input is the type of nearby locations
-def getNearPlace(location_type):
-    lat, lng = getGeometry(atl_locations[0])
+def getNearPlace(lat, lng, location_type):
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat}%2C{lng}&radius=1000&type={location_type}&key={API_KEY}"
 
     payload={}
@@ -42,10 +41,17 @@ def getNearPlace(location_type):
 
     response = requests.request("GET", url, headers=headers, data=payload).json()
     # Get the frist five elements of return locations
-    places = response['results'][0:5]
+    try:
+        if len(response['results']) > 5:
+            places = response['results'][0:5]
+        else:
+            places = response['results']
+    except:
+        pass
     print(places[0])
 
-getNearPlace(location_types[0])
+lat, lng = getGeometry(atl_locations[0])
+getNearPlace(lat, lng, location_types[0])
 
 
 
