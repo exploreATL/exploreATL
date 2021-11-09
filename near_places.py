@@ -63,9 +63,19 @@ def getNearPlace(lat, lng, location_type):
             places = response["results"]
     except:
         pass
-    print(places[0])
+    nearby_places = []
+    for place in places:
+        nearby_place = {}
+        nearby_place['location'] = place['geometry']['location']
+        nearby_place['name'] = place['name']
+        nearby_place['photo_reference'] = place['photos'][0]['photo_reference']
+        nearby_places.append(nearby_place)
+    return nearby_places
 
 
 lat, lng = getGeometry(atl_locations[2])
-getNearPlace(lat, lng, location_types[3])
+nearby_places = getNearPlace(lat, lng, location_types[0])
+for place in nearby_places:
+    print(place)
+
 
