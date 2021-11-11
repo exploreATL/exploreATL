@@ -25,18 +25,22 @@ location_types = [
     "library",
 ]
 
-# Get the lat and lng of input places
-# If places is limited, the geometry can be hard coded
-# Input of function is the name of places
+
 def getGeometry(atl_location):
+    '''
+    Get the lat and lng of input places
+
+    Parameters:
+    atl_location(string): the name of a place
+
+    Returns:
+    lat, lng
+    '''
+    
     atl_location = atl_location.replace(" ", "%20")
     url = f"https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input={atl_location}&inputtype=textquery&fields=geometry&key={API_KEY}"
 
-    payload = {}
-    headers = {}
-
-    response = requests.request("GET", url, headers=headers, data=payload).json()
-    # print(response)
+    response = requests.get(url).json()
     try:
         geometry = response["candidates"][0]["geometry"]["location"]
     except:
@@ -46,15 +50,24 @@ def getGeometry(atl_location):
     return lat, lng
 
 
-# Use the Nearby Search Request to find near places
-# Input is the type of nearby locations
-def getNearPlace(lat, lng, location_type):
+def getNearPlace(location, location_type):
+    '''
+    Use the Nearby Search Request to find near places
+
+    Parameters:
+    location(string): the name of a place
+    location_type(string): the type of nearby locations
+
+    Returns:
+    List nearby_places with 5 elements, each element is a nearby place with fields
+    of geometry location(lat, lng), name, and photo reference
+    '''
+
+    lat, lng = getGeometry(location)
+
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat}%2C{lng}&radius=1000&type={location_type}&key={API_KEY}"
 
-    payload = {}
-    headers = {}
-
-    response = requests.request("GET", url, headers=headers, data=payload).json()
+    response = requests.get(url).json()
     # Get the frist five elements of return locations
     try:
         if len(response["results"]) > 5:
@@ -66,16 +79,13 @@ def getNearPlace(lat, lng, location_type):
     nearby_places = []
     for place in places:
         nearby_place = {}
-        nearby_place['location'] = place['geometry']['location']
-        nearby_place['name'] = place['name']
-        nearby_place['photo_reference'] = place['photos'][0]['photo_reference']
+        nearby_place["location"] = place["geometry"]["location"]
+        nearby_place["name"] = place["name"]
+        nearby_place["photo_reference"] = place["photos"][0]["photo_reference"]
         nearby_places.append(nearby_place)
     return nearby_places
 
 
-lat, lng = getGeometry(atl_locations[2])
-nearby_places = getNearPlace(lat, lng, location_types[0])
+nearby_places = getNearPlace(atl_locations[0], location_types[0])
 for place in nearby_places:
     print(place)
-
-
