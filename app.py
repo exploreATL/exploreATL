@@ -14,15 +14,34 @@ If there are any questions, please contact us at 'exploreatl.devs@gmail.com.
 MIT Education License Preferred
 '''
 import os
+import flask
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 
 app = Flask(__name__)
 
 # Set User Login Page and Route.
-@app.route("/", methods=['GET', 'POST'])
+@app.route('/')
+def first():
+    return redirect('signup')
+
+@app.route("/signup")
+def signup():
+    return flask.render_template("signup.html")
+
+
+@app.route("/signup", methods=["POST"])
+def signup_post():
+    return flask.redirect(flask.url_for("login"))
+
+
+@app.route("/login")
 def login():
-    error = None
-    return render_template('login.html', error=error)
+    return flask.render_template("login.html")
+
+
+@app.route("/login", methods=["POST"])
+def login_post():
+    return render_template('index.html')
 
 
 # Set User Profile Page and Route

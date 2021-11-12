@@ -1,0 +1,20 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="/static/theme.css">
+</head>
+
+<body>
+    <h1>Sign up!</h1>
+    <form method="POST" action="/signup">
+        <input class="input is-large" type="text" name="username" placeholder="Your Username" autofocus="">
+        <input type="text" name="password" placeholder="Your Password">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+<redirectlink>
+    <a href={{ url_for('login') }}>Already have an account? Log In!</a>
+</redirectlink>
+
+</html>

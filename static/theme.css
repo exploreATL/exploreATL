@@ -1,0 +1,17 @@
+body {
+    font-family: Helvetica;
+    color: rgb(194, 194, 194);
+    background-color: black;
+    font-size: 36pt;
+    text-align: center;
+    padding-top: 1em;
+}
+
+redirectlink {
+    font-family: Helvetica;
+    color: rgb(194, 194, 194);
+    background-color: black;
+    font-size: 12pt;
+    text-align: center;
+    padding-top: 1em;
+}
