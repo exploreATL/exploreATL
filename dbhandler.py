@@ -77,9 +77,9 @@ class DBHandler:
 	    ----------
 	    user_id : String
 	        A String object for the user_id in table. required
-	    pass : String
+	    password : String
 	    	A String object for the user password. required
-	    artist_list: List
+	    places_list: List
 	    	A List object that contains the list of 'artist_id's to add to the table. required
 
 		"""
