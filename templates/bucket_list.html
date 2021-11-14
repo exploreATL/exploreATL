@@ -1,10 +1,36 @@
 <!DOCTYPE html>
+
 <head>
-	Explore ATL Bucket List
+	<h1>This the user bucket list page</h1>
+	<script>
+		function getOptions() {
+			var x = document.getElementById("mySelect");
+			var txt = "";
+			var i;
+			for (i = 0; i < x.length; i++) {
+				txt = txt + " " + x.options[i].text;
+			}
+			document.getElementById("demo").innerHTML = txt;
+		}
+	</script>
 </head>
+
 <body>
 
-<h1>This the user bucket list page</h1>
-<p>Add the bucket list functionality here.</p>
+	<form>
+		Select your Location to explore:
+		<select id="mySelect">
+			<option>Atlanta</option>
+			<option>Johns Creek</option>
+			<option>Dunwoody</option>
+			<option>Atlanta Downtown</option>
+		</select>
+		<br><br>
+		<input type="button" onclick="getOptions()" value="Output all options">
+	</form>
+
+	<p id="demo"></p>
 
 </body>
+
+</html>
