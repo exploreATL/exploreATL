@@ -24,7 +24,6 @@ from near_places import NearPlaces
 # Set React Route and app blueprint
 app = Flask(__name__, static_folder="./build/static")
 bp = flask.Blueprint("bp", __name__, template_folder="./build")
-app.register_blueprint(bp)
 
 # Create User and DBHandler
 global user
@@ -35,6 +34,7 @@ dbhandler = DBHandler
 def index():
     return flask.render_template("index.html")
 
+app.register_blueprint(bp)
 
 # Set User Login Page and Route.
 @app.route('/')
@@ -61,12 +61,13 @@ def login():
 
 @app.route("/login", methods=["POST"])
 def login_post():
-	error = None
-	userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
-	if userinfo:
-		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
-		return flask.redirect(flask.url_for("bp.index"))
-	return render_template('login.html', error='User Not Found')
+	# error = None
+	# userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
+	# if userinfo:
+	# 	user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
+	# 	return flask.redirect(flask.url_for("bp.index"))
+	# return render_template('login.html', error='User Not Found')
+    return flask.redirect(flask.url_for("bp.index"))
 
 
 # Set User Profile Page and Route
