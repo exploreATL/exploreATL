@@ -16,6 +16,7 @@ MIT Eduation License Preferred
 import os
 import psycopg2
 import hashlib
+import pandas 
 from dotenv import load_dotenv
 
 class DBHandler:
@@ -53,10 +54,12 @@ class DBHandler:
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 		try:
-			cursor.execute('''CREATE TABLE user_table (
+			cursor.execute('''CREATE TABLE test_table (
 			    USER_ID varchar(100),
 			    PASS varchar(100),
-			    LIST text[],
+			    LIST text[5],
+			    BEEN bool[5],
+			    REVIEW text[5],
 			    PRIMARY KEY (USER_ID)
 				);''')
 			connect.commit()
@@ -85,14 +88,15 @@ class DBHandler:
 		"""
 
 		# Hash password for storage
-		hashed_pass = hashlib.md5(password.encode())
+		hashed_obj = hashlib.md5(password.encode())
+		hashed_pass = hashed_obj.hexdigest()
 
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 		try:
 			cursor.execute(
 	    		"""
-	    		INSERT INTO user_table(USER_ID,PASS,LIST)
+	    		INSERT INTO test_table(USER_ID,PASS,LIST)
 	    		VALUES (%s, %s, %s)
 	    		""",
 	    		(user_id, hashed_pass, places_list)
@@ -123,12 +127,19 @@ class DBHandler:
 		"""
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
+
+		# Hash Password
+		hashed_obj = hashlib.md5(password.encode())
+		hashed_pass = hashed_obj.hexdigest()
+
 		try:
-			cursor.execute("SELECT * from user_table WHERE USER_ID=%s", (user_id, ))
+			cursor.execute("SELECT * from test_table WHERE USER_ID=%s", (user_id, ))
 			info = cursor.fetchall()
-			connect.commit()
-			connect.close()
-			return info
+			if info[0][1] == hashed_pass:
+				connect.commit()
+				connect.close()
+				return info
+			return False
 		except ValueError:
 			print("Table Lookup error. Either does not exist or other.")
 			connect.commit()
@@ -144,3 +155,11 @@ class DBHandler:
 		#TODO
 		pass
 
+
+# username = 'admin012341234'
+# password = 'password'
+# near_places = ['Hyatt Regency Atlanta', 'Hard Rock Cafe', 'The Sun Dial Restaurant, Bar & View', "Ray's In the City", "McCormick & Schmick's Seafood & Steaks"]
+
+# # DBHandler.insert_user(DBHandler, username, password, near_places)
+# result = DBHandler.lookup_user(DBHandler, username, password)
+# print(result[0][1])
