@@ -15,8 +15,13 @@ MIT Education License Preferred
 '''
 import os
 import flask
+from auth import User
+from dbhandler import DBHandler
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 
+global user
+user = User(None, None, None, None)
+dbhandler = DBHandler
 app = Flask(__name__)
 
 # Set User Login Page and Route.
@@ -26,30 +31,40 @@ def first():
 
 @app.route("/signup")
 def signup():
-    return flask.render_template("signup.html")
+	return flask.render_template("signup.html")
 
 
 @app.route("/signup", methods=["POST"])
 def signup_post():
-    return flask.redirect(flask.url_for("login"))
+	if request.method == 'POST':
+		empty = []
+		DBHandler.insert_user(dbhandler, request.form['username'], request.form['password'], empty)
+		return flask.redirect(flask.url_for("login"))
 
 
 @app.route("/login")
 def login():
-    return flask.render_template("login.html")
+	return flask.render_template("login.html")
 
 
 @app.route("/login", methods=["POST"])
 def login_post():
-    return render_template('index.html')
+	error = None
+	userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
+	if userinfo:
+		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
+		return flask.redirect(flask.url_for("profile"))
+	return render_template('login.html', error='User Not Found')
 
 
 # Set User Profile Page and Route
+@app.route("/profile")
 def profile():
 	error = None
 	return render_template('profile.html', error=error)
 
-
+# Set User List Page and Route
+@app.route("/index")
 def bucket_list():
 	error = None
 	return render_template('pbucket_list.html', error=error)
