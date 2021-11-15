@@ -2,6 +2,8 @@
 
 This is the project repository for CSC 4350 SWE CTW.
 
+Deployment: https://explore-atl.herokuapp.com/
+
 ## Team Members:
 
 Michael Roussell
