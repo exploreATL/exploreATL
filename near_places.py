@@ -108,3 +108,4 @@ class NearPlaces:
 nearby_places = NearPlaces.getNearPlace(atl_locations[0], location_types[0])
 for place in nearby_places:
     print(place)
+
