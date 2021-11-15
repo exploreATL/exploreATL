@@ -61,13 +61,12 @@ def login():
 
 @app.route("/login", methods=["POST"])
 def login_post():
-	# error = None
-	# userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
-	# if userinfo:
-	# 	user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
-	# 	return flask.redirect(flask.url_for("bp.index"))
-	# return render_template('login.html', error='User Not Found')
-    return flask.redirect(flask.url_for("bp.index"))
+	error = None
+	userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
+	if userinfo:
+		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
+		return flask.redirect(flask.url_for("bp.index"))
+	return render_template('login.html', error='User Not Found')
 
 
 # Set User Profile Page and Route
