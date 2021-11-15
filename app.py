@@ -24,7 +24,6 @@ from near_places import NearPlaces
 # Set React Route and app blueprint
 app = Flask(__name__, static_folder="./build/static")
 bp = flask.Blueprint("bp", __name__, template_folder="./build")
-app.register_blueprint(bp)
 
 # Create User and DBHandler
 global user
@@ -35,6 +34,7 @@ dbhandler = DBHandler
 def index():
     return flask.render_template("index.html")
 
+app.register_blueprint(bp)
 
 # Set User Login Page and Route.
 @app.route('/')
