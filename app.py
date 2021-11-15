@@ -18,11 +18,23 @@ import flask
 from auth import User
 from dbhandler import DBHandler
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from near_places import NearPlaces
 
+
+# Set React Route and app blueprint
+app = Flask(__name__, static_folder="./build/static")
+bp = flask.Blueprint("bp", __name__, template_folder="./build")
+app.register_blueprint(bp)
+
+# Create User and DBHandler
 global user
 user = User(None, None, None, None)
 dbhandler = DBHandler
-app = Flask(__name__)
+
+@bp.route("/index")
+def index():
+    return flask.render_template("index.html")
+
 
 # Set User Login Page and Route.
 @app.route('/')
@@ -53,7 +65,7 @@ def login_post():
 	userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
 	if userinfo:
 		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
-		return flask.redirect(flask.url_for("profile"))
+		return flask.redirect(flask.url_for("bp.index"))
 	return render_template('login.html', error='User Not Found')
 
 
@@ -71,9 +83,27 @@ def bucket_list():
 
 
 # If launched from this file, run Flask app.
-if __name__ == '__main__':
-	app.run(
-		host=os.getenv('IP', '0.0.0.0'),
-    	port=int(os.getenv('PORT', 8080)),
-    	debug=True
-    )
+# if __name__ == '__main__':
+# 	app.run(
+# 		host=os.getenv('IP', '0.0.0.0'),
+#     	port=int(os.getenv('PORT', 8080)),
+#     	debug=True
+#     )
+@app.route("/nearby", methods=["POST"])
+def nearby():
+	location = request.json.get("location")
+	type = request.json.get("type")
+	nearby_places = NearPlaces.getNearPlace(location, type)
+	return jsonify({"nearby_places": nearby_places})
+
+
+@app.route("/")
+def main():
+    return flask.redirect(flask.url_for("bp.index"))
+
+
+# If launched from this file, run Flask app.
+app.run(
+    host=os.getenv("IP", "0.0.0.0"),
+    port=int(os.getenv("PORT", 8081)),
+)
