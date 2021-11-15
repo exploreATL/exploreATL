@@ -11,3 +11,6 @@ Michael Roussell
 ...
 
 ...
+
+# Sep Up:
+install Ant Design using `npm install antd --save` and `npm install --save @ant-design/icons`

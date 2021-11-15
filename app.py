@@ -16,8 +16,17 @@ MIT Education License Preferred
 import os
 import flask
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from near_places import NearPlaces
 
-app = Flask(__name__)
+# Set React Route
+app = Flask(__name__, static_folder="./build/static")
+bp = flask.Blueprint("bp", __name__, template_folder="./build")
+
+@bp.route("/index")
+def index():
+    return flask.render_template("index.html")
+
+app.register_blueprint(bp)
 
 # Set User Login Page and Route.
 @app.route('/')
@@ -41,7 +50,7 @@ def login():
 
 @app.route("/login", methods=["POST"])
 def login_post():
-    return render_template('index.html')
+    return flask.redirect(flask.url_for("bp.index"))
 
 
 # Set User Profile Page and Route
@@ -56,9 +65,27 @@ def bucket_list():
 
 
 # If launched from this file, run Flask app.
-if __name__ == '__main__':
-	app.run(
-		host=os.getenv('IP', '0.0.0.0'),
-    	port=int(os.getenv('PORT', 8080)),
-    	debug=True
-    )
+# if __name__ == '__main__':
+# 	app.run(
+# 		host=os.getenv('IP', '0.0.0.0'),
+#     	port=int(os.getenv('PORT', 8080)),
+#     	debug=True
+#     )
+@app.route("/nearby", methods=["POST"])
+def nearby():
+	location = request.json.get("location")
+	type = request.json.get("type")
+	nearby_places = NearPlaces.getNearPlace(location, type)
+	return jsonify({"nearby_places": nearby_places})
+
+
+@app.route("/")
+def main():
+    return flask.redirect(flask.url_for("bp.index"))
+
+
+# If launched from this file, run Flask app.
+app.run(
+    host=os.getenv("IP", "0.0.0.0"),
+    port=int(os.getenv("PORT", 8081)),
+)
