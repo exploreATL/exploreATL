@@ -1,0 +1,8 @@
+Flask
+requests
+python-dotenv
+flask-login
+Flask-SQLAlchemy
+psycopg2-binary
+antd
+ant-design
