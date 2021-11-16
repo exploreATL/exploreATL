@@ -84,8 +84,12 @@ class DBHandler:
 	    	A String object for the user password. required
 	    places_list: List
 	    	A List object that contains the list of 'artist_id's to add to the table. required
-
+	
+		Returns:
+			0 if added succesfully and 1 is there was an error
 		"""
+
+
 
 		# Hash password for storage
 		hashed_obj = hashlib.md5(password.encode())
@@ -93,6 +97,13 @@ class DBHandler:
 
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
+
+		cursor.execute("SELECT * from test_table WHERE USER_ID=%s", (user_id, ))
+		info = cursor.fetchall()
+
+		if info:
+			return 1
+
 		try:
 			cursor.execute(
 	    		"""
@@ -103,12 +114,12 @@ class DBHandler:
 			)
 			connect.commit()
 			connect.close()
-			return
+			return 0
 		except ValueError:
 			print("Table Intsert error. Either already exist or other.")
 			connect.commit()
 			connect.close()
-			pass
+			return 1
 
 
 	def lookup_user(self, user_id:str, password:str): 
@@ -135,16 +146,18 @@ class DBHandler:
 		try:
 			cursor.execute("SELECT * from test_table WHERE USER_ID=%s", (user_id, ))
 			info = cursor.fetchall()
+			if not info:
+				return 1
 			if info[0][1] == hashed_pass:
 				connect.commit()
 				connect.close()
 				return info
-			return False
+			return 0
 		except ValueError:
 			print("Table Lookup error. Either does not exist or other.")
 			connect.commit()
 			connect.close()
-			pass
+			return 1
 
 
 	def insert_list(user_id:str, places_list:list):
@@ -155,7 +168,7 @@ class DBHandler:
 		#TODO
 		pass
 
-
+### USED FOR TESTING ###
 # username = 'admin012341234'
 # password = 'password'
 # near_places = ['Hyatt Regency Atlanta', 'Hard Rock Cafe', 'The Sun Dial Restaurant, Bar & View', "Ray's In the City", "McCormick & Schmick's Seafood & Steaks"]
@@ -163,3 +176,6 @@ class DBHandler:
 # # DBHandler.insert_user(DBHandler, username, password, near_places)
 # result = DBHandler.lookup_user(DBHandler, username, password)
 # print(result[0][1])
+
+
+
