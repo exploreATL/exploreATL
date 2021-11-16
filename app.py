@@ -82,13 +82,6 @@ def bucket_list():
 	return render_template('pbucket_list.html', error=error)
 
 
-# If launched from this file, run Flask app.
-# if __name__ == '__main__':
-# 	app.run(
-# 		host=os.getenv('IP', '0.0.0.0'),
-#     	port=int(os.getenv('PORT', 8080)),
-#     	debug=True
-#     )
 @app.route("/nearby", methods=["POST"])
 def nearby():
 	location = request.json.get("location")
