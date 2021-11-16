@@ -16,7 +16,6 @@ MIT Eduation License Preferred
 import os
 import psycopg2
 import hashlib
-import pandas 
 from dotenv import load_dotenv
 
 class DBHandler:
