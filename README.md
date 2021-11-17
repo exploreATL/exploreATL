@@ -17,7 +17,7 @@ Eshan Bhojane
 
 ...
 
-# Sep Up:
+# Set Up:
 
 For setting up this app locally please follow these steps:
 
