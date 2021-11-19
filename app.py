@@ -86,7 +86,9 @@ def bucket_list():
 def nearby():
 	location = request.json.get("location")
 	type = request.json.get("type")
+	
 	nearby_places = NearPlaces.getNearPlace(location, type)
+
 	return jsonify({"nearby_places": nearby_places})
 
 

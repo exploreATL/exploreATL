@@ -57,6 +57,7 @@ class DBHandler:
 			cursor.execute('''CREATE TABLE test_table (
 			    USER_ID varchar(100),
 			    PASS varchar(100),
+				
 			    LIST text[5],
 			    BEEN bool[5],
 			    REVIEW text[5],

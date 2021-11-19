@@ -1,20 +1,27 @@
 import "./App.css";
 import { useState } from "react";
-import { Radio, Button, Space, PageHeader, Checkbox } from "antd";
+import { Radio, Button, Space, PageHeader, Checkbox, Select } from "antd";
 import { CarOutlined } from "@ant-design/icons";
 
 function App() {
   // place is the variable that stores the nearby places;
   // value represents the ATL location user chooses
   // explore is the number of explored places
+  const { Option } = Select;
   const [place, setPlace] = useState([]);
   const [value, setValue] = useState("downtown atlanta");
   const [showList, setShowList] = useState(false);
+  const [typeChoose, setTypeChoose] = useState(true);
+  const [type, setType] = useState("restaurant");
   const [explore, setExplore] = useState(0);
 
-  const onChange = (e) => {
+  const chooseAtl = (e) => {
     setValue(e.target.value);
   };
+
+  function chooseType(value) {
+    setType(value);
+  }
 
   // Add the number of explored places
   const visited = (e) => {
@@ -67,37 +74,70 @@ function App() {
 
   return (
     <>
-      <PageHeader className="page_header" title="ExploreATL" />
+      {/* <PageHeader className="page_header" title="ExploreATL" /> */}
+      <PageHeader
+        className="site-page-header"
+        title="ExploreATL"
+        subTitle="Explore the Atlanta city"
+      />
+      ,
       {showList ? (
         <>
-          <div className="nearby_list">
-            <div className="nearby_title">Nearby Restaurants of {value}:</div>
-            {place.map(function (item, i) {
-              return (
-                <div>
-                  <Checkbox onChange={visited} value={item["name"]}>
-                    {item["name"]}
-                  </Checkbox>
+          {typeChoose ? (
+            <>
+              <div className="choose_title">
+                Choose the type of nearby locations:
+              </div>
+              <div>
+                <Select
+                  defaultValue="restaurant"
+                  style={{ width: 120 }}
+                  onChange={chooseType}
+                >
+                  <Option value="restaurant">Restaurant</Option>
+                  <Option value="museum">Museum</Option>
+                  <Option value="park">Park</Option>
+                  <Option value="store">Store</Option>
+                  <Option value="library">Library</Option>
+                </Select>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="nearby_list">
+                <div className="nearby_title">
+                  Nearby Restaurants of {value}:
                 </div>
-              );
-            })}
-            <Button
-              onClick={submit_visit}
-              type="primary"
-              className="submit_button"
-            >
-              Submit!
-            </Button>
-          </div>
+                {place.map(function (item, i) {
+                  return (
+                    <div>
+                      <Checkbox onChange={visited} value={item["name"]}>
+                        {item["name"]}
+                      </Checkbox>
+                    </div>
+                  );
+                })}
+                <Button
+                  onClick={submit_visit}
+                  type="primary"
+                  className="submit_button"
+                >
+                  Submit!
+                </Button>
+              </div>
+            </>
+          )}
         </>
       ) : (
         <div className="chooseAtl">
           <div>
             <CarOutlined style={{ margin: "5px" }} />
-            <span className="chooseLoc">Start from choosing one location:</span>
+            <span className="choose_title">
+              Start from choosing one location:
+            </span>
           </div>
           <div className="radio">
-            <Radio.Group onChange={onChange} value={value}>
+            <Radio.Group onChange={chooseAtl} value={value}>
               <Space direction="vertical">
                 <Radio value={"downtown atlanta"}>Downtown</Radio>
                 <Radio value={"midtown atlanta"}>Midtown</Radio>
