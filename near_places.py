@@ -98,14 +98,13 @@ class NearPlaces:
         nearby_places = []
         for place in places:
             nearby_place = {}
-            nearby_place["location"] = place["geometry"]["location"]
             nearby_place["name"] = place["name"]
             nearby_place["photo_reference"] = place["photos"][0]["photo_reference"]
             nearby_places.append(nearby_place)
         return nearby_places
 
 
-nearby_places = NearPlaces.getNearPlace(atl_locations[0], location_types[0])
-for place in nearby_places:
-    print(place)
+# nearby_places = NearPlaces.getNearPlace(atl_locations[0], location_types[0])
+# for place in nearby_places:
+#     print(place)
 
