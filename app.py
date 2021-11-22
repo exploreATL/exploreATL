@@ -51,12 +51,16 @@ def signup():
 
 @app.route("/signup", methods=["POST"])
 def signup_post():
-    if request.method == "POST":
-        empty = []
-        DBHandler.insert_user(
-            dbhandler, request.form["username"], request.form["password"], empty
-        )
-        return flask.redirect(flask.url_for("login"))
+	if request.method == 'POST':
+		error = None
+		empty = []
+		try:
+			result = DBHandler.insert_user(dbhandler, request.form['username'], request.form['password'], empty)
+		except ValueError:
+			result = 1
+		if result == 0:
+			return flask.redirect(flask.url_for("login"))
+		return flask.render_template("signup.html", error='User Already Exists')
 
 
 @app.route("/login")
@@ -66,14 +70,14 @@ def login():
 
 @app.route("/login", methods=["POST"])
 def login_post():
-    error = None
-    userinfo = DBHandler.lookup_user(
-        dbhandler, request.form["username"], request.form["password"]
-    )
-    if userinfo:
-        user = User(userinfo[0][0], userinfo[0][2], userinfo[0][3], userinfo[0][4])
-        return flask.redirect(flask.url_for("bp.index"))
-    return render_template("login.html", error="User Not Found")
+	error = None
+	userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
+	if userinfo == 1:
+		return render_template('login.html', error='User Not Found')
+	if userinfo:
+		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
+		return flask.redirect(flask.url_for("bp.index"))
+	return render_template('login.html', error='User Not Found')
 
 
 # Set User Profile Page and Route
@@ -81,6 +85,7 @@ def login_post():
 def profile():
     error = None
     return render_template("profile.html", error=error)
+
 
 
 # Set User List Page and Route
@@ -138,5 +143,5 @@ def main():
 # If launched from this file, run Flask app.
 app.run(
     host=os.getenv("IP", "0.0.0.0"),
-    port=int(os.getenv("PORT", 8081)),
+    port=int(os.getenv("PORT", 8080)),
 )
