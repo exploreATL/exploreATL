@@ -16,6 +16,7 @@ MIT Education License Preferred
 import os
 import flask
 import flask_login
+from dotenv import load_dotenv
 from auth import User
 from dbhandler import DBHandler
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
@@ -26,6 +27,9 @@ from near_places import NearPlaces
 # Set React Route and app blueprint
 app = Flask(__name__, static_folder="./build/static")
 bp = flask.Blueprint("bp", __name__, template_folder="./build")
+load_dotenv()
+app.secret_key = os.getenv('SECRET_KEY')
+
 
 # Create DBHandler Object
 dbhandler = DBHandler
@@ -88,7 +92,9 @@ def login_post():
 	if userinfo == 1:
 		return render_template('login.html', error='User Not Found')
 	if userinfo:
+		global user
 		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
+		flask_login.login_user(user, force = True, remember = True)
 		return flask.redirect(flask.url_for("bp.index"))
 	return render_template('login.html', error='User Not Found')
 
