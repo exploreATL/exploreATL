@@ -50,6 +50,7 @@ class DBHandler:
 		Used the psycopg2 init functions to create table if one does not already exist. If it does throw error and pass.
 
 		"""
+		# Create connection and cursor
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 		try:
@@ -95,15 +96,18 @@ class DBHandler:
 		hashed_obj = hashlib.md5(password.encode())
 		hashed_pass = hashed_obj.hexdigest()
 
+		# Create connection and cursor
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 
+		# Check if user already exists
 		cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
 		info = cursor.fetchall()
 
 		if info:
 			return 1
 
+		# Insert user into user table
 		try:
 			cursor.execute(
 	    		"""
@@ -133,7 +137,7 @@ class DBHandler:
 	    password:str
 	    	A String object for the user password. required
 
-	    Returns : table object with user_id and list of 'artist_id's
+	    Returns : table object with user's info object, or 1 if there was error
 
 		"""
 		connect = self.initdbconnect(self)
@@ -143,6 +147,7 @@ class DBHandler:
 		hashed_obj = hashlib.md5(password.encode())
 		hashed_pass = hashed_obj.hexdigest()
 
+		# Check for user
 		try:
 			cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
 			info = cursor.fetchall()
@@ -152,7 +157,7 @@ class DBHandler:
 				connect.commit()
 				connect.close()
 				return info
-			return 0
+			return 1
 		except ValueError:
 			print("Table Lookup error. Either does not exist or other.")
 			connect.commit()
