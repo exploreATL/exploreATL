@@ -1,3 +1,5 @@
+@import "~antd/dist/antd.css";
+
 .App {
   text-align: center;
 }
@@ -8,11 +10,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.chooseLoc {
+.choose_title {
   font-size: large;
+  margin-bottom: 20px;
 }
 
-.page_header {
+.site-page-header {
   height: 15%;
   background-color: #faebd7;
   padding: 15px;

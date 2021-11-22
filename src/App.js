@@ -1,34 +1,70 @@
 import "./App.css";
 import { useState } from "react";
-import { Radio, Button, Space, PageHeader, Checkbox } from "antd";
+import { Radio, Button, Space, PageHeader, Checkbox, Select } from "antd";
 import { CarOutlined } from "@ant-design/icons";
 
 function App() {
   // place is the variable that stores the nearby places;
-  // value represents the ATL location user chooses
+  // atl represents the ATL location user chooses
   // explore is the number of explored places
+  const { Option } = Select;
   const [place, setPlace] = useState([]);
-  const [value, setValue] = useState("downtown atlanta");
-  const [showList, setShowList] = useState(false);
+  const [showList, setShowList] = useState(true);
+  const [atl, setAtl] = useState("downtown atlanta");
+  const [type, setType] = useState("restaurant");
   const [explore, setExplore] = useState(0);
+  const [been, setBeen] = useState([false, false, false, false, false]);
 
-  const onChange = (e) => {
-    setValue(e.target.value);
+  const chooseAtl = (e) => {
+    setAtl(e.target.value);
+  };
+
+  function chooseType(value) {
+    setType(value);
+    console.log(type);
+  }
+
+  // Fetch data of nearby places after user chooses the location
+  const submit_nearby = () => {
+    fetch("/nearby", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        location: atl,
+        type: type,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        var places_info = data["nearby_places"];
+        var places_visit = data["visited"];
+        console.log(places_info);
+        console.log(places_visit);
+        for (let i = 0; i < 5; i++) {
+          places_info[i]["visited"] = places_visit[i];
+        }
+        console.log(places_info);
+        setPlace(places_info);
+        console.log(place);
+        if (place.length > 0) {
+          setShowList(false);
+        }
+      });
   };
 
   // Add the number of explored places
-  const visited = (e) => {
+  const clickVisited = (e) => {
     console.log(e.target.value);
+    var set_been = been;
+    set_been[e.target.value] = e.target.checked;
+    setBeen(set_been);
     if (e.target.checked) {
       setExplore((prevExplore) => prevExplore + 1);
     } else {
       setExplore((prevExplore) => prevExplore - 1);
     }
-  };
-
-  // Fetch data of nearby places after user chooses the location
-  const submit = () => {
-    nearPlace();
   };
 
   // Function called after user chooses their visted places
@@ -41,41 +77,93 @@ function App() {
     } else {
       alert(`You still have ${not_visted} nearby places to explore!`);
     }
-  };
-
-  // The function to fetch nearby places from back-end
-  const nearPlace = () => {
-    fetch("/nearby", {
+    place.forEach(function(item){ delete item.visited });
+    console.log(place)
+    fetch("/explore", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        location: value,
-        type: "restaurant",
+        places: place,
+        been: been,
       }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setPlace(data["nearby_places"]);
-        console.log(place);
-        if (place.length > 0) {
-          setShowList(true);
-        }
-      });
+    });
+  };
+
+  const goback = () => {
+    setShowList(true);
+    setExplore(0);
+    setPlace([]);
+    setBeen([false, false, false, false, false]);
   };
 
   return (
     <>
-      <PageHeader className="page_header" title="ExploreATL" />
+      <PageHeader
+        className="site-page-header"
+        title="ExploreATL"
+        subTitle="Explore the Atlanta city"
+      />
       {showList ? (
         <>
+          <div className="chooseAtl">
+            <div>
+              <CarOutlined style={{ margin: "5px" }} />
+              <span className="choose_title">
+                Start from choosing one location:
+              </span>
+            </div>
+            <div className="radio">
+              <Radio.Group onChange={chooseAtl} value={atl}>
+                <Space direction="vertical">
+                  <Radio value={"downtown atlanta"}>Downtown</Radio>
+                  <Radio value={"midtown atlanta"}>Midtown</Radio>
+                  <Radio value={"sandy springs"}>Sandy Springs</Radio>
+                  <Radio value={"johns creek"}>Johns Creek</Radio>
+                  <Radio value={"norcross atlanta"}>Norcross</Radio>
+                </Space>
+              </Radio.Group>
+            </div>
+          </div>
+          <div className="choose_title">
+            Choose the type of nearby locations:
+          </div>
+          <div>
+            <Select
+              defaultValue="restaurant"
+              style={{ width: 120 }}
+              onChange={chooseType}
+            >
+              <Option value="restaurant">Restaurant</Option>
+              <Option value="museum">Museum</Option>
+              <Option value="park">Park</Option>
+              <Option value="store">Store</Option>
+              <Option value="library">Library</Option>
+            </Select>
+          </div>
+          <Button
+            onClick={submit_nearby}
+            type="primary"
+            className="submit_button"
+          >
+            Submit!
+          </Button>
+        </>
+      ) : (
+        <>
           <div className="nearby_list">
-            <div className="nearby_title">Nearby Restaurants of {value}:</div>
+            <div className="nearby_title">
+              Nearby {type} of {atl}:
+            </div>
             {place.map(function (item, i) {
               return (
                 <div>
-                  <Checkbox onChange={visited} value={item["name"]}>
+                  <Checkbox
+                    onChange={clickVisited}
+                    value={i}
+                    defaultChecked={item["visited"]}
+                  >
                     {item["name"]}
                   </Checkbox>
                 </div>
@@ -88,29 +176,9 @@ function App() {
             >
               Submit!
             </Button>
+            <Button onClick={goback}>Go back to choose ATL locations</Button>
           </div>
         </>
-      ) : (
-        <div className="chooseAtl">
-          <div>
-            <CarOutlined style={{ margin: "5px" }} />
-            <span className="chooseLoc">Start from choosing one location:</span>
-          </div>
-          <div className="radio">
-            <Radio.Group onChange={onChange} value={value}>
-              <Space direction="vertical">
-                <Radio value={"downtown atlanta"}>Downtown</Radio>
-                <Radio value={"midtown atlanta"}>Midtown</Radio>
-                <Radio value={"sandy springs"}>Sandy Springs</Radio>
-                <Radio value={"johns creek"}>Johns Creek</Radio>
-                <Radio value={"norcross atlanta"}>Norcross</Radio>
-              </Space>
-            </Radio.Group>
-          </div>
-          <Button onClick={submit} type="primary" className="submit_button">
-            Submit!
-          </Button>
-        </div>
       )}
     </>
   );
