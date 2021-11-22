@@ -53,12 +53,13 @@ class DBHandler:
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 		try:
-			cursor.execute('''CREATE TABLE test_table (
+			cursor.execute('''CREATE TABLE test_table2 (
 			    USER_ID varchar(100),
 			    PASS varchar(100),
+			    TYPE varchar(100),
 			    LIST text[5],
 			    BEEN bool[5],
-			    REVIEW text[5],
+			    REVIEW text,
 			    PRIMARY KEY (USER_ID)
 				);''')
 			connect.commit()
@@ -82,7 +83,7 @@ class DBHandler:
 	    password : String
 	    	A String object for the user password. required
 	    places_list: List
-	    	A List object that contains the list of 'artist_id's to add to the table. required
+	    	A List object that contains the list of place names to add to the table. required
 	
 		Returns:
 			0 if added succesfully and 1 is there was an error
@@ -97,7 +98,7 @@ class DBHandler:
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 
-		cursor.execute("SELECT * from test_table WHERE USER_ID=%s", (user_id, ))
+		cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
 		info = cursor.fetchall()
 
 		if info:
@@ -106,7 +107,7 @@ class DBHandler:
 		try:
 			cursor.execute(
 	    		"""
-	    		INSERT INTO test_table(USER_ID,PASS,LIST)
+	    		INSERT INTO test_table2(USER_ID,PASS,LIST)
 	    		VALUES (%s, %s, %s)
 	    		""",
 	    		(user_id, hashed_pass, places_list)
@@ -143,7 +144,7 @@ class DBHandler:
 		hashed_pass = hashed_obj.hexdigest()
 
 		try:
-			cursor.execute("SELECT * from test_table WHERE USER_ID=%s", (user_id, ))
+			cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
 			info = cursor.fetchall()
 			if not info:
 				return 1
@@ -159,20 +160,76 @@ class DBHandler:
 			return 1
 
 
-	def insert_list(user_id:str, places_list:list):
-		#TODO
-		pass
+	def update_list(self, user_id:str, loc_type:str, places_list:list, been:list, review:str):
+		"""
+		Used the psycopg2 init functions to insert user's list and data. If it does throw error and pass.
 
-	def update_list(user_id:str, places_list:list):
-		#TODO
-		pass
+		Parameters
+	    ----------
+	    user_id : String (required)
+	        A String object for the user_id in table. 
+	    loc_type : String (required)
+	    	A String object that indicates the type of locations given
+	    places_list: List (required)
+	    	A List object that contains the list of place namess to add to the table. 
+	    been : List (required)
+	    	A List object that indicates in same order as places_list which places have been visited
+		review : String (required)
+			A String object that has the 
+
+		Returns:
+			0 if added succesfully and 1 is there was an error
+		"""
+
+		# if arrays are too large, trim them
+		if len(places_list) > 5:
+			places_list = places_list[5:]
+		if len(been) > 5:
+			been = been[5:]
+
+		connect = self.initdbconnect(self)
+		cursor = self.initdbcursor(self, connect)
+
+		cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
+		info = cursor.fetchall()
+
+		if info:
+			return 1
+
+		try:
+			cursor.execute(
+	    		"""
+	    		UPDATE test_table2
+	    		SET TYPE=%s,
+	    		SET LIST=%s,
+	    		SET BEEN=%s,
+	    		SET REVIEW=%s,
+	    		WHERE USER_ID=%s
+	    		""",
+	    		(loc_type, places_list, been, review, user_id)
+			)
+			connect.commit()
+			connect.close()
+			return 0
+		except ValueError:
+			print("Table Intsert error. Either already exist or other.")
+			connect.commit()
+			connect.close()
+			return 1
+
+
 
 ### USED FOR TESTING ###
-# username = 'admin012341234'
-# password = 'password'
-# near_places = ['Hyatt Regency Atlanta', 'Hard Rock Cafe', 'The Sun Dial Restaurant, Bar & View', "Ray's In the City", "McCormick & Schmick's Seafood & Steaks"]
+username = 'admin012341234'
+password = 'password'
+near_places = ["Hyatt Regency Atlanta", "Hard Rock Cafe", "The Sun Dial Restaurant", "Bar & View", "Ray's In the City"]
+loc_type = 'restaurant'
+been = [True, False, False, False, False]
+review = "I liked a place because of a thing that involved other things around that place and things that were inside that place"
 
-# # DBHandler.insert_user(DBHandler, username, password, near_places)
+# DBHandler.insert_user(DBHandler, username, password, near_places)
+DBHandler.update_list(DBHandler, username, loc_type, near_places, been, review)
+print("did something")
 # result = DBHandler.lookup_user(DBHandler, username, password)
 # print(result[0][1])
 

@@ -15,9 +15,11 @@ MIT Education License Preferred
 '''
 import os
 import flask
+import flask_login
 from auth import User
 from dbhandler import DBHandler
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from flask_login import login_user
 from near_places import NearPlaces
 
 
@@ -25,14 +27,28 @@ from near_places import NearPlaces
 app = Flask(__name__, static_folder="./build/static")
 bp = flask.Blueprint("bp", __name__, template_folder="./build")
 
-# Create User and DBHandler
+# Create DBHandler Object
+dbhandler = DBHandler
+
+# Create Flask-Login User
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 global user
 user = User(None, None, None, None)
-dbhandler = DBHandler
+
+# Create User Loader
+@login_manager.user_loader
+def load_user(id):
+    return User.get(id)
+
 
 @bp.route("/index")
 def index():
-    return flask.render_template("index.html")
+	error = None
+	if not user.id:
+		return redirect(url_for('login'))
+	return flask.render_template("index.html")
 
 app.register_blueprint(bp)
 
