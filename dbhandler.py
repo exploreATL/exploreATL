@@ -187,15 +187,19 @@ class DBHandler:
 		if len(been) > 5:
 			been = been[5:]
 
+		# init connection and cursor
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 
+		# find user_id
 		cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
 		info = cursor.fetchall()
 
+		# if no user exist, return error code 1
 		if info:
 			return 1
 
+		# update user values in user table
 		try:
 			cursor.execute(
 	    		"""
@@ -220,16 +224,16 @@ class DBHandler:
 
 
 ### USED FOR TESTING ###
-username = 'admin012341234'
-password = 'password'
-near_places = ["Hyatt Regency Atlanta", "Hard Rock Cafe", "The Sun Dial Restaurant", "Bar & View", "Ray's In the City"]
-loc_type = 'restaurant'
-been = [True, False, False, False, False]
-review = "I liked a place because of a thing that involved other things around that place and things that were inside that place"
+# username = 'admin012341234'
+# password = 'password'
+# near_places = ["Hyatt Regency Atlanta", "Hard Rock Cafe", "The Sun Dial Restaurant", "Bar & View", "Ray's In the City"]
+# loc_type = 'restaurant'
+# been = [True, False, False, False, False]
+# review = "I liked a place because of a thing that involved other things around that place and things that were inside that place"
 
 # DBHandler.insert_user(DBHandler, username, password, near_places)
-DBHandler.update_list(DBHandler, username, loc_type, near_places, been, review)
-print("did something")
+# DBHandler.update_list(DBHandler, username, loc_type, near_places, been, review)
+# print("did something")
 # result = DBHandler.lookup_user(DBHandler, username, password)
 # print(result[0][1])
 
