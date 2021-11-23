@@ -98,7 +98,6 @@ class NearPlaces:
         nearby_places = []
         for place in places:
             nearby_place = {}
-            nearby_place["location"] = place["geometry"]["location"]
             nearby_place["name"] = place["name"]
             nearby_place["photo_reference"] = place["photos"][0]["photo_reference"]
             nearby_places.append(nearby_place)

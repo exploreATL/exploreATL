@@ -1,4 +1,4 @@
-'''
+"""
 Explore ATL
 Michael Roussell
 GSU CSC 4350 Software Engineering
@@ -12,7 +12,7 @@ Python 3.9.7 version of the python interpreter.
 
 If there are any questions, please contact us at 'exploreatl.devs@gmail.com.
 MIT Education License Preferred
-'''
+"""
 import os
 import flask
 import flask_login
@@ -47,6 +47,7 @@ def load_user(id):
     return User.get(id)
 
 
+
 @bp.route("/index")
 def index():
 	error = None
@@ -54,16 +55,18 @@ def index():
 		return redirect(url_for('login'))
 	return flask.render_template("index.html")
 
+
 app.register_blueprint(bp)
 
 # Set User Login Page and Route.
-@app.route('/')
+@app.route("/")
 def first():
-    return redirect('signup')
+    return redirect("signup")
+
 
 @app.route("/signup")
 def signup():
-	return flask.render_template("signup.html")
+    return flask.render_template("signup.html")
 
 
 @app.route("/signup", methods=["POST"])
@@ -82,7 +85,7 @@ def signup_post():
 
 @app.route("/login")
 def login():
-	return flask.render_template("login.html")
+    return flask.render_template("login.html")
 
 
 @app.route("/login", methods=["POST"])
@@ -102,23 +105,56 @@ def login_post():
 # Set User Profile Page and Route
 @app.route("/profile")
 def profile():
-	error = None
-	return render_template('profile.html', error=error)
+    error = None
+    return render_template("profile.html", error=error)
+
 
 
 # Set User List Page and Route
 @app.route("/index")
 def bucket_list():
-	error = None
-	return render_template('pbucket_list.html', error=error)
+    error = None
+    return render_template("pbucket_list.html", error=error)
 
 
 @app.route("/nearby", methods=["POST"])
 def nearby():
-	location = request.json.get("location")
-	type = request.json.get("type")
-	nearby_places = NearPlaces.getNearPlace(location, type)
-	return jsonify({"nearby_places": nearby_places})
+    location = request.json.get("location")
+    type = request.json.get("type")
+
+    """
+	1. search if the database contains info with the same userid, location, type
+	2. if true, then get data from database and return
+	3. if not, then call the google places API to get the data and store into the database
+
+    result = Table.query.filter_by(username=current_user.username, location=location, type=type).all()
+	if result:
+		places = result.LIST
+		visited = result.BEEN
+		return jsonify({"nearby_places": places, "visited": visited})
+	else:
+		nearby_places = NearPlaces.getNearPlace(location, type)
+		visited =  [False for i in range(5)]
+		db_data = {USER_ID: current_user.username, PASS: password, 
+			TYPE: type, LIST: nearby_places, BEEN: visited, REVIEW text[5]..., PRIMARY KEY (USER_ID)...}
+		insert db_data to database
+		return jsonify({"nearby_places": places, "visited": visited})
+
+	"""
+    visited = [False for i in range(5)]
+    nearby_places = NearPlaces.getNearPlace(location, type)
+    return jsonify({"nearby_places": nearby_places, "visited": visited})
+
+
+@app.route("/explore", methods=["POST"])
+def explore():
+    places = request.json.get("places")
+    been = request.json.get("been")
+    print(places)
+    print(been)
+    # update the database
+	# add exception handle
+    return flask.jsonify({"status": 200, "reason": "Success"})
 
 
 @app.route("/")
