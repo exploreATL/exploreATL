@@ -15,25 +15,45 @@ MIT Education License Preferred
 """
 import os
 import flask
+import flask_login
+from dotenv import load_dotenv
 from auth import User
 from dbhandler import DBHandler
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from flask_login import login_user
 from near_places import NearPlaces
 
 
 # Set React Route and app blueprint
 app = Flask(__name__, static_folder="./build/static")
 bp = flask.Blueprint("bp", __name__, template_folder="./build")
+load_dotenv()
+app.secret_key = os.getenv('SECRET_KEY')
 
-# Create User and DBHandler
+
+# Create DBHandler Object
+dbhandler = DBHandler
+
+# Create Flask-Login User
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 global user
 user = User(None, None, None, None)
-dbhandler = DBHandler
+
+# Create User Loader
+@login_manager.user_loader
+def load_user(id):
+    return User.get(id)
+
 
 
 @bp.route("/index")
 def index():
-    return flask.render_template("index.html")
+	error = None
+	if not user.id:
+		return redirect(url_for('login'))
+	return flask.render_template("index.html")
 
 
 app.register_blueprint(bp)
@@ -75,7 +95,9 @@ def login_post():
 	if userinfo == 1:
 		return render_template('login.html', error='User Not Found')
 	if userinfo:
+		global user
 		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
+		flask_login.login_user(user, force = True, remember = True)
 		return flask.redirect(flask.url_for("bp.index"))
 	return render_template('login.html', error='User Not Found')
 
