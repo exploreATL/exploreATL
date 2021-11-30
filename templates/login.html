@@ -1,55 +1,163 @@
 <html>
 
 <head>
-<style>
-    body {
-        width: max-content;
-        margin: auto;
-        text-align: center;
-        font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(-45deg, #ee896a, #eb689a, #4ebbe2, #73e4c8);
-        background-size: 400% 400%;
-        animation: gradient 12s ease infinite;
-		color: white;
-		font-size: 36pt;
-		text-align: center;
-		padding-top: 1em;
-    }
+    <style>
+        /* body allows you to edit the background of the entire webpage */
+        body {
+            font-family: 'Titillium Web', sans-serif;
+            background: linear-gradient(-45deg, #ee896a, #eb689a, #4ebbe2, #73e4c8);
+            background-size: 400% 400%;
+            animation: gradient 12s ease infinite;
+            color: white;
+        }
 
-    @keyframes gradient {
-        0% {
-            background-position: 0% 50%;
+        /* .mainbg allows you to edit the background of the signup/login card */
+        .mainbg {
+            background-color: #FFFFFF;
+            width: 400px;
+            height: 400px;
+            margin: 7em auto;
+            border-radius: 1.5em;
+            box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
         }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
 
-	redirectlink {
-		font-family: Helvetica;
-		font-size: 12pt;
-		text-align: center;
-		padding-top: 1em;
-	}
-</style>
+        /* .login allows you to edit the 'Log In' text. */
+        .login {
+            padding-top: 40px;
+            color: #201e96;
+            font-family: 'Titillium Web', sans-serif;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        /* .username allows you to edit the 'username' text inside of the form */
+        .username {
+            width: 76%;
+            color: #383838;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            background: rgba(136, 126, 126, 0.04);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            box-sizing: border-box;
+            border: 2px solid rgba(0, 0, 0, 0.02);
+            margin-bottom: 50px;
+            margin-left: 46px;
+            text-align: center;
+            margin-bottom: 27px;
+            font-family: 'Titillium Web', sans-serif;
+        }
+
+        /* Allows you to edit the padding between log in and username blank */
+        form.form1 {
+            padding-top: 40px;
+        }
+
+        /* Allows you to edit the 'password' text inside of the form */
+        .password {
+            width: 76%;
+            color: #383838;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            background: rgba(136, 126, 126, 0.04);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            box-sizing: border-box;
+            border: 2px solid rgba(0, 0, 0, 0.02);
+            margin-bottom: 50px;
+            margin-left: 46px;
+            text-align: center;
+            margin-bottom: 27px;
+            font-family: 'Titillium Web', sans-serif;
+        }
+
+        /* Allows you to edit characteristics of the submit button */
+        .submit {
+            cursor: pointer;
+            border-radius: 5em;
+            color: #fff;
+            background: linear-gradient(to right, #201e96, #3083ff);
+            border: 0;
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-bottom: 10px;
+            padding-top: 10px;
+            font-family: 'Titillium Web', sans-serif;
+            margin-left: 35%;
+            font-size: 13px;
+            box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Allows you to edit the signup/login redirect link padding */
+        .redirect {
+            padding-top: 15px;
+        }
+
+        /* Allows you to edit the signup/login redirect link text characteristics. */
+        a {
+            text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
+            color: #201e96;
+        }
+
+        /* Allows you to edit the error flash message. */
+        flash {
+            font-size: 50px;
+            text-align: center;
+            align-items: center;
+        }
+
+        @media (max-width: 600px) {
+            .main {
+                border-radius: 0px;
+            }
+
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap" rel="stylesheet">
 </head>
 
-
 <body>
-	<h1>Log In</h1>
-	<h2>{{error}}</h2>
-	<form method="POST" action="/login">
-		<input type="text" name="username" placeholder="Your Username">
-		<input type="text" name="password" placeholder="Your Password">
-		<input type="submit" value="Submit">
-	</form>
+    <flash>
+        <p class="flash">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </p>
+    </flash>
+    <div class="mainbg">
+        <p class="login" align="center">Log In</p>
+        <form class="form1" method="POST" action="/login">
+            <input class="username" type="text" align="center" name="username" placeholder="Username">
+            <input class="password" type="password" align="center" name="password" placeholder="Password">
+            <input class="submit" type="submit" value="Submit">
+            <p class="redirect" align="center">
+                <a href={{ url_for('signup') }}>Need to make an account? Sign Up!</a>
+            </p>
+    </div>
 </body>
-
-<redirectlink>
-	<a href={{ url_for('signup') }}>Need to make an account? Sign Up!</a>
-</redirectlink>
 
 </html>
