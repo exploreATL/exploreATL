@@ -61,7 +61,12 @@ app.register_blueprint(bp)
 # Set User Login Page and Route.
 @app.route("/")
 def first():
-    return redirect("signup")
+    return redirect("landpage")
+
+
+@app.route("/landpage")
+def landpage():
+    return flask.render_template("landpage.html")
 
 
 @app.route("/signup")
@@ -102,21 +107,6 @@ def login_post():
 		flask_login.login_user(user, force = True, remember = True)
 		return flask.redirect(flask.url_for("bp.index"))
 	return render_template('login.html', error='User Not Found')
-
-
-# Set User Profile Page and Route
-@app.route("/profile")
-def profile():
-    error = None
-    return render_template("profile.html", error=error)
-
-
-
-# Set User List Page and Route
-@app.route("/index")
-def bucket_list():
-    error = None
-    return render_template("pbucket_list.html", error=error)
 
 
 @app.route("/nearby", methods=["POST"])
