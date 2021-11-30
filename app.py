@@ -39,7 +39,7 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 global user
-user = User(None, None, None, None)
+user = User(None, None, None, None, None, None)
 
 # Create User Loader
 @login_manager.user_loader
@@ -96,7 +96,7 @@ def login_post():
 		return render_template('login.html', error='User Not Found')
 	if userinfo:
 		global user
-		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4])
+		user = User(userinfo[0][0], userinfo[0][2],  userinfo[0][3], userinfo[0][4], userinfo[0][5], userinfo[0][6])
 		flask_login.login_user(user, force = True, remember = True)
 		return flask.redirect(flask.url_for("bp.index"))
 	return render_template('login.html', error='User Not Found')
@@ -119,31 +119,50 @@ def bucket_list():
 
 @app.route("/nearby", methods=["POST"])
 def nearby():
-    location = request.json.get("location")
-    type = request.json.get("type")
+	location = request.json.get("location")
+	type = request.json.get("type")
+	global user
 
-    """
-	1. search if the database contains info with the same userid, location, type
-	2. if true, then get data from database and return
-	3. if not, then call the google places API to get the data and store into the database
-
-    result = Table.query.filter_by(username=current_user.username, location=location, type=type).all()
-	if result:
-		places = result.LIST
-		visited = result.BEEN
-		return jsonify({"nearby_places": places, "visited": visited})
+	# If user goes to same location and location type
+	if user.id != None and location == user.location and type == user.loc_type:
+		location = user.location
+		type = user.loc_type
+		visited = user.check_list
+		nearby_places = user.user_list
+		review = ""
+		print(f"User '{user.id}' not found")
 	else:
-		nearby_places = NearPlaces.getNearPlace(location, type)
-		visited =  [False for i in range(5)]
-		db_data = {USER_ID: current_user.username, PASS: password, 
-			TYPE: type, LIST: nearby_places, BEEN: visited, REVIEW text[5]..., PRIMARY KEY (USER_ID)...}
-		insert db_data to database
-		return jsonify({"nearby_places": places, "visited": visited})
 
-	"""
-    visited = [False for i in range(5)]
-    nearby_places = NearPlaces.getNearPlace(location, type)
-    return jsonify({"nearby_places": nearby_places, "visited": visited})
+	    
+	    
+	    """
+		1. search if the database contains info with the same userid, location, type
+		2. if true, then get data from database and return
+		3. if not, then call the google places API to get the data and store into the database
+
+	    result = Table.query.filter_by(username=current_user.username, location=location, type=type).all()
+		if result:
+			places = result.LIST
+			visited = result.BEEN
+			return jsonify({"nearby_places": places, "visited": visited})
+		else:
+			nearby_places = NearPlaces.getNearPlace(location, type)
+			visited =  [False for i in range(5)]
+			db_data = {USER_ID: current_user.username, PASS: password, 
+				TYPE: type, LIST: nearby_places, BEEN: visited, REVIEW text[5]..., PRIMARY KEY (USER_ID)...}
+			insert db_data to database
+			return jsonify({"nearby_places": places, "visited": visited})
+
+		"""
+	    visited = [False for i in range(5)]
+	    nearby_places = NearPlaces.getNearPlace(location, type, )
+	    review = ""
+
+	    # store info for user into database
+	    DBHandler.update_list(dbhandler, user.id, location, type, nearby_places, visited, review)
+	    print(f"User '{user.id}' data updated and stored")
+
+	return jsonify({"nearby_places": nearby_places, "visited": visited})
 
 
 @app.route("/explore", methods=["POST"])
