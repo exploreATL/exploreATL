@@ -21,8 +21,10 @@ from flask_login import UserMixin
 class User(UserMixin):
 
 	# Class init
-	def __init__(self, id:str, user_list:list, check_list:list, review_list:list):
+	def __init__(self, id:str, location:str, loc_type:str, user_list:list, check_list:list, review_list:list):
 		self.id = id
+		self.location = location
+		self.loc_type = loc_type
 		self.user_list = user_list
 		self.check_list = check_list
 		self.review_list = review_list

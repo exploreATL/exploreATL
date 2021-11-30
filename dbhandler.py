@@ -54,9 +54,10 @@ class DBHandler:
 		connect = self.initdbconnect(self)
 		cursor = self.initdbcursor(self, connect)
 		try:
-			cursor.execute('''CREATE TABLE test_table2 (
+			cursor.execute('''CREATE TABLE test_table3 (
 			    USER_ID varchar(100),
 			    PASS varchar(100),
+			    LOCATION varchar(100),
 			    TYPE varchar(100),
 			    LIST text[5],
 			    BEEN bool[5],
@@ -65,6 +66,7 @@ class DBHandler:
 				);''')
 			connect.commit()
 			connect.close()
+			print("Created Table Successfully")
 			return
 		except ValueError:
 			print("Table Creation error. Either already exist or other.")
@@ -101,7 +103,7 @@ class DBHandler:
 		cursor = self.initdbcursor(self, connect)
 
 		# Check if user already exists
-		cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
+		cursor.execute("SELECT * from test_table3 WHERE USER_ID=%s", (user_id, ))
 		info = cursor.fetchall()
 
 		if info:
@@ -111,7 +113,7 @@ class DBHandler:
 		try:
 			cursor.execute(
 	    		"""
-	    		INSERT INTO test_table2(USER_ID,PASS,LIST)
+	    		INSERT INTO test_table3(USER_ID,PASS,LIST)
 	    		VALUES (%s, %s, %s)
 	    		""",
 	    		(user_id, hashed_pass, places_list)
@@ -149,7 +151,7 @@ class DBHandler:
 
 		# Check for user
 		try:
-			cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
+			cursor.execute("SELECT * from test_table3 WHERE USER_ID=%s", (user_id, ))
 			info = cursor.fetchall()
 			if not info:
 				return 1
@@ -165,7 +167,7 @@ class DBHandler:
 			return 1
 
 
-	def update_list(self, user_id:str, loc_type:str, places_list:list, been:list, review:str):
+	def update_list(self, user_id:str, location:str, loc_type:str, places_list:list, been:list, review:str):
 		"""
 		Used the psycopg2 init functions to insert user's list and data. If it does throw error and pass.
 
@@ -197,7 +199,7 @@ class DBHandler:
 		cursor = self.initdbcursor(self, connect)
 
 		# find user_id
-		cursor.execute("SELECT * from test_table2 WHERE USER_ID=%s", (user_id, ))
+		cursor.execute("SELECT * from test_table3 WHERE USER_ID=%s", (user_id, ))
 		info = cursor.fetchall()
 
 		# if no user exist, return error code 1
@@ -208,17 +210,19 @@ class DBHandler:
 		try:
 			cursor.execute(
 	    		"""
-	    		UPDATE test_table2
+	    		UPDATE test_table3
+	    		SET LOCATION=%s,
 	    		SET TYPE=%s,
 	    		SET LIST=%s,
 	    		SET BEEN=%s,
 	    		SET REVIEW=%s,
 	    		WHERE USER_ID=%s
 	    		""",
-	    		(loc_type, places_list, been, review, user_id)
+	    		(location, loc_type, places_list, been, review, user_id, )
 			)
 			connect.commit()
 			connect.close()
+			print(f'Data Updated for {user_id}')
 			return 0
 		except ValueError:
 			print("Table Intsert error. Either already exist or other.")
@@ -229,16 +233,18 @@ class DBHandler:
 
 
 ### USED FOR TESTING ###
-# username = 'admin012341234'
-# password = 'password'
-# near_places = ["Hyatt Regency Atlanta", "Hard Rock Cafe", "The Sun Dial Restaurant", "Bar & View", "Ray's In the City"]
-# loc_type = 'restaurant'
-# been = [True, False, False, False, False]
-# review = "I liked a place because of a thing that involved other things around that place and things that were inside that place"
+# DBHandler.create_user_table(DBHandler)
+username = 'admin012341234'
+password = 'password'
+near_places = ["Hyatt Regency Atlanta", "Hard Rock Cafe", "The Sun Dial Restaurant", "Bar & View", "Ray's In the City"]
+loc_type = "restaurant"
+location = "midtown atlanta"
+been = [True, False, False, False, False]
+review = "I liked a place because of a thing that involved other things around that place and things that were inside that place"
 
-# DBHandler.insert_user(DBHandler, username, password, near_places)
-# DBHandler.update_list(DBHandler, username, loc_type, near_places, been, review)
-# print("did something")
+DBHandler.insert_user(DBHandler, username, password, near_places)
+DBHandler.update_list(DBHandler, username, location, loc_type, near_places, been, review)
+print("did the update")
 # result = DBHandler.lookup_user(DBHandler, username, password)
 # print(result[0][1])
 
