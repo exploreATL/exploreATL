@@ -1,0 +1,329 @@
+<!-- Eshan Bhojane design using pictures from img address we put css styling in hml for singularity and efficiency -->
+<!-- we make use of many box featuress and flex box -->
+<!-- You can run and test this landpage using basic flash python file setupimport flask
+
+app = flask.Flask(__name__)
+
+@app.route('/')
+def index():
+    return flask.render_template(
+    "index.html")
+
+app.run(use_reloader = True, debug = True) -->
+
+
+<!-- we still need to make this work with react and have the buttons lead them to signup/login page -->
+<!-- A cool feature may be that when user clicks on of the cities buttons at the bottom it displays top locations -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Landing Page Concept</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-gap: 1em;
+        }
+
+        .box {
+            border: 1px solid teal;
+        }
+
+        .box img {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 17px;
+            color: #b46a2a;
+            line-height: 1.6;
+        }
+
+        #showcase {
+            background-image: url('https://cdn.shopify.com/s/files/1/0011/6005/2795/articles/kingdominblue_16x9_lowres.jpg?v=1615815333');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        #showcase h1 {
+            font-size: 50px;
+            line-height: 1.2;
+        }
+
+        #showcase p {
+            font-size: 20px;
+        }
+
+        #showcase .button {
+            font-size: 22px;
+            text-decoration: none;
+            color: #926239;
+            border: #926239 1px solid;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #showcase .button:hover {
+            background: #926239;
+            color: #fff;
+        }
+
+        #section-a {
+            padding: 400px;
+            font-size: 30px;
+            background: #030201;
+            color: #fff;
+            text-align: center;
+            border: #0a0807 1px solid;
+        }
+
+        #section-b {
+            background-image: url('https://i.ytimg.com/vi/Oi3fVOxWK4c/maxresdefault.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            font-size: 30px;
+            color: rgb(10, 10, 10);
+        }
+
+        #section-b .button {
+            font-size: 18px;
+            text-decoration: none;
+            color: #070606;
+            border: #070707 1px solid;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #section-b .button:hover {
+            background: #0e0d0d;
+            color: rgb(212, 217, 221);
+        }
+
+        #section-c {
+            display: flex;
+        }
+
+        #section-c div {
+            padding: 150px;
+        }
+
+        #section-c .box-1 {
+            background-image: url('https://www.exploregeorgia.org/sites/default/files/styles/listing_slideshow/public/listing_images/profile/238/wetlandboardwalk.jpg?itok=SYn7Zn_Z');
+            background-size: cover;
+            background-position: center;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: rgb(255, 255, 255);
+        }
+
+        #section-c .box-1 .button {
+            font-size: 18px;
+            text-decoration: none;
+            color: #070606;
+            border: #070707 1px solid;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #section-c .box-1 .button:hover {
+            background: #0e0d0d;
+            color: rgb(93, 142, 182);
+        }
+
+        #section-c .box-2 {
+            background-image: url('https://res.cloudinary.com/apartmentlist/image/fetch/f_auto,q_auto,t_renter_life_cover/https://images.ctfassets.net/jeox55pd4d8n/6rZ4crw7KiraZTBB2uHSZV/0aaeb5133553a13c5d305187145d4e0d/shutterstock_1450403549.jpg');
+            background-size: cover;
+            background-position: center;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: rgb(255, 255, 255);
+        }
+
+        #section-c .box-2 .button {
+            font-size: 18px;
+            text-decoration: none;
+            color: #070606;
+            border: #070707 1px solid;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #section-c .box-2 .button:hover {
+            background: #0e0d0d;
+            color: rgb(93, 142, 182);
+        }
+
+        #section-c .box-3 {
+            background-image: url('https://localadventurer.com/wp-content/uploads/2013/02/ga-aquarium-whale-sharks.jpg');
+            background-size: cover;
+            background-position: center;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: rgb(10, 10, 10);
+        }
+
+        #section-c .box-3 .button {
+            font-size: 18px;
+            text-decoration: none;
+            color: #070606;
+            border: #070707 1px solid;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #section-c .box-3 .button:hover {
+            background: #0e0d0d;
+            color: rgb(93, 142, 182);
+        }
+
+        #section-c .box-4 {
+            background-image: url('https://www.norcrossga.net/ImageRepository/Document?documentID=3130');
+            background-size: cover;
+            background-position: center;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: rgb(10, 10, 10);
+        }
+
+        #section-c .box-4 .button {
+            font-size: 18px;
+            text-decoration: none;
+            color: #070606;
+            border: #070707 1px solid;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #section-c .box-4 .button:hover {
+            background: #0e0d0d;
+            color: rgb(93, 142, 182);
+        }
+
+        #section-c .box-5 {
+            background-image: url('http://res.cloudinary.com/simpleview/image/upload/v1506003295/clients/sandysprings/King_and_Queen_d7315df0-1f62-4cab-aec4-2af6325f5710.jpg');
+            background-size: cover;
+            background-position: center;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: rgb(10, 10, 10);
+        }
+
+        #section-c .box-5 .button {
+            font-size: 18px;
+            text-decoration: none;
+            color: #070606;
+            border: #070707 1px solid;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #section-c .box-5 .button:hover {
+            background: #0e0d0d;
+            color: rgb(93, 142, 182);
+        }
+    </style>
+</head>
+
+<body>
+    <header id="showcase">
+        <h1>Welcome To ExploreATL</h1>
+        <p>Explore, Discover, Enjoy
+        </p>
+        <a href="#" class="button">SIGNUP HERE</a>
+    </header>
+    <section id="section-a">
+        <p>Welcome to Atlanta. We were inspired by the exploration and discovery aspects of Pokemon that pushed players
+            to search and research pokemons and places. We wanted you to have the same experience except with our state
+            georgia. We have give a couple of cities and their top attractions for you to go to and enjoy and have given
+            you and explorers notebook for you to note down your findings. Treat life like a game and take your time to
+            breathe in the fresh air of exploration.
+
+        <div class="container">
+            <div class="box">
+                <img src="https://i.redd.it/t6yhmpsrzqi71.png">
+            </div>
+            <div class="box">
+                <img
+                    src="https://www.producershop.com/wp-content/uploads/2020/03/Osaka-Sound-Tales-From-Atlanta-Music-Loops.jpg">
+            </div>
+            <div class="box">
+                <img src="https://i.pinimg.com/736x/d5/2e/f8/d52ef8b30561e2f8668e8c677864c8de.jpg">
+            </div>
+        </div>
+        </p>
+    </section>
+    <section id="section-b">
+        <a href="#" class="button">Make an account and get a list of places in five cities in georgia, and then check
+            them off as you go. By
+            making an account you will be able to make saveable notes and have a list of places you've already explored.
+            Get exploring!</a>
+    </section>
+    <section id="section-c">
+        <div class="box-1">
+            <a href="#" class="button">Johns Creek</a>
+        </div>
+        <div class="box-2">
+            <a href="#" class="button">Buckhead Atlanta</a>
+        </div>
+        <div class="box-3">
+            <a href="#" class="button">Downtown Atlanta</a>
+        </div>
+        <div class="box-4">
+            <a href="#" class="button">Norcross Atlanta</a>
+        </div>
+        <div class="box-5">
+            <a href="#" class="button">Sandy Springs</a>
+        </div>
+    </section>
+</body>
+
+</html>
