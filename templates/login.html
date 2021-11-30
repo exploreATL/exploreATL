@@ -3,68 +3,50 @@
 <head>
 	<style>
 		body {
-			font-family: Helvetica;
-			color: rgb(194, 194, 194);
-			background-color: black;
+			width: max-content;
+			margin: auto;
+			text-align: center;
+			font-family: Arial, Helvetica, sans-serif;
+			background: linear-gradient(-45deg, #ee896a, #eb689a, #4ebbe2, #73e4c8);
+			background-size: 400% 400%;
+			animation: gradient 12s ease infinite;
+			color: white;
 			font-size: 36pt;
 			text-align: center;
 			padding-top: 1em;
 		}
 
+		@keyframes gradient {
+			0% {
+				background-position: 0% 50%;
+			}
+
+			50% {
+				background-position: 100% 50%;
+			}
+
+			100% {
+				background-position: 0% 50%;
+			}
+		}
+
 		redirectlink {
 			font-family: Helvetica;
-			color: rgb(194, 194, 194);
-			background-color: black;
 			font-size: 12pt;
 			text-align: center;
 			padding-top: 1em;
 		}
+		
+		redirectlink div {
+            margin: 10px;
+            font-size: 20px;
+        }
 	</style>
-<style>
-    body {
-        width: max-content;
-        margin: auto;
-        text-align: center;
-        font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(-45deg, #ee896a, #eb689a, #4ebbe2, #73e4c8);
-        background-size: 400% 400%;
-        animation: gradient 12s ease infinite;
-		color: white;
-		font-size: 36pt;
-		text-align: center;
-		padding-top: 1em;
-    }
-
-    @keyframes gradient {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-
-	redirectlink {
-		font-family: Helvetica;
-		font-size: 12pt;
-		text-align: center;
-		padding-top: 1em;
-	}
-</style>
 </head>
 
-<div class="container">
-	<div class="clip-text">
-		Login
-	</div>
-</div>
 
 <body>
 	<h1>Log In</h1>
-	<h2>{{error}}</h2>
 	<form method="POST" action="/login">
 		<input type="text" name="username" placeholder="Your Username">
 		<input type="text" name="password" placeholder="Your Password">
@@ -73,7 +55,8 @@
 </body>
 
 <redirectlink>
-	<a href={{ url_for('signup') }}>Need to make an account? Sign Up!</a>
+	<div><a href="signup">Need to make an account? Sign Up!</a></div>
+	<div><a href="landpage">Go back to the landing page</a></div>
 </redirectlink>
 
 </html>
