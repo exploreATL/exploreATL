@@ -15,14 +15,14 @@ MIT Education License Preferred
 """
 import os
 import flask
+from flask.helpers import flash
 import flask_login
 from dotenv import load_dotenv
 from auth import User
 from dbhandler import DBHandler
-from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify, flash
 from flask_login import login_user
 from near_places import NearPlaces
-
 
 # Set React Route and app blueprint
 app = Flask(__name__, static_folder="./build/static")
@@ -85,6 +85,7 @@ def signup_post():
 			result = 1
 		if result == 0:
 			return flask.redirect(flask.url_for("login"))
+		flash('User Already Exists. Try logging in instead!')
 		return flask.render_template("signup.html", error='User Already Exists')
 
 
@@ -98,6 +99,7 @@ def login_post():
 	error = None
 	userinfo = DBHandler.lookup_user(dbhandler, request.form['username'], request.form['password'])
 	if userinfo == 1:
+		flash('User Not Found. Try creating an account!')
 		return render_template('login.html', error='User Not Found')
 	if userinfo:
 		global user
@@ -152,7 +154,7 @@ def main():
     return flask.redirect(flask.url_for("bp.index"))
 
 
-# If launched from this file, run Flask app.
+#If launched from this file, run Flask app.
 app.run(
     host=os.getenv("IP", "0.0.0.0"),
     port=int(os.getenv("PORT", 8080)),
