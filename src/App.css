@@ -1,0 +1,33 @@
+@import "~antd/dist/antd.css";
+
+.App {
+  text-align: center;
+}
+
+body {
+  background-color: lightblue;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.choose_title {
+  font-size: large;
+  margin-bottom: 20px;
+}
+
+.site-page-header {
+  height: 15%;
+  background-color: #faebd7;
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.submit_button {
+  margin: 15px;
+}
+
+.nearby_title {
+  font-size: large;
+  margin-bottom: 20px;
+}
