@@ -158,13 +158,14 @@ def nearby():
 	    DBHandler.update_list(dbhandler, user.id, location, type, nearby_places, visited, review)
 	    print(f"User '{user.id}' data updated and stored")
 
-	return jsonify({"nearby_places": nearby_places, "visited": visited})
+	return jsonify({"nearby_places": nearby_places, "visited": visited, "review": review})
 
 # Route and logic for explore
 @app.route("/explore", methods=["POST"])
 def explore():
     places = request.json.get("places")
     been = request.json.get("been")
+    review = request.json.get("review")
     print(places)
     print(been)
     # update the database

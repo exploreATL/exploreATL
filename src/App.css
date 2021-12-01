@@ -31,3 +31,14 @@ body {
   font-size: large;
   margin-bottom: 20px;
 }
+
+.note {
+  width: 35%;
+  margin: 20px auto;
+}
+
+.checklist {
+  text-align: left;
+  margin: auto;
+  width: max-content;
+}
