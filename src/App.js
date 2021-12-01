@@ -1,6 +1,14 @@
 import "./App.css";
-import { useState } from "react";
-import { Radio, Button, Space, PageHeader, Checkbox, Select } from "antd";
+import { useState, useEffect } from "react";
+import {
+  Radio,
+  Button,
+  Space,
+  PageHeader,
+  Checkbox,
+  Select,
+  Input,
+} from "antd";
 import { CarOutlined } from "@ant-design/icons";
 
 function App() {
@@ -8,12 +16,14 @@ function App() {
   // atl represents the ATL location user chooses
   // explore is the number of explored places
   const { Option } = Select;
+  const { TextArea } = Input;
   const [place, setPlace] = useState([]);
   const [showList, setShowList] = useState(true);
   const [atl, setAtl] = useState("downtown atlanta");
   const [type, setType] = useState("restaurant");
   const [explore, setExplore] = useState(0);
   const [been, setBeen] = useState([false, false, false, false, false]);
+  const [note, setNote] = useState("");
 
   const chooseAtl = (e) => {
     setAtl(e.target.value);
@@ -67,6 +77,11 @@ function App() {
     }
   };
 
+  //Get the user input note
+  const getNote = (e) => {
+    setNote(e.target.value);
+  };
+
   // Function called after user chooses their visted places
   const submit_visit = () => {
     const not_visted = place.length - explore;
@@ -77,8 +92,10 @@ function App() {
     } else {
       alert(`You still have ${not_visted} nearby places to explore!`);
     }
-    place.forEach(function(item){ delete item.visited });
-    console.log(place)
+    place.forEach(function (item) {
+      delete item.visited;
+    });
+    console.log(place);
     fetch("/explore", {
       method: "POST",
       headers: {
@@ -87,6 +104,7 @@ function App() {
       body: JSON.stringify({
         places: place,
         been: been,
+        review: note
       }),
     });
   };
@@ -156,19 +174,29 @@ function App() {
             <div className="nearby_title">
               Nearby {type} of {atl}:
             </div>
-            {place.map(function (item, i) {
-              return (
-                <div>
-                  <Checkbox
-                    onChange={clickVisited}
-                    value={i}
-                    defaultChecked={item["visited"]}
-                  >
-                    {item["name"]}
-                  </Checkbox>
-                </div>
-              );
-            })}
+            <div className="checklist">
+              {place.map(function (item, i) {
+                return (
+                  <div>
+                    <Checkbox
+                      onChange={clickVisited}
+                      value={i}
+                      defaultChecked={item["visited"]}
+                    >
+                      {item["name"]}
+                    </Checkbox>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="note">
+              <div className="nearby_title">Write your note about {atl}</div>
+              <TextArea
+                placeholder="Write down your experience in the place..."
+                allowClear
+                onChange={getNote}
+              />
+            </div>
             <Button
               onClick={submit_visit}
               type="primary"
