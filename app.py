@@ -120,45 +120,28 @@ def nearby():
 	location = request.json.get("location")
 	type = request.json.get("type")
 	global user
-
+	print(f"{location} vs. {user.location}")
 	# If user goes to same location and location type
-	if user.id != None and location == user.location and type == user.loc_type:
+	if location == user.location and type == user.loc_type:
 		# Load User's dat from User Object attributes.
 		location = user.location
 		type = user.loc_type
 		visited = user.check_list
 		nearby_places = user.user_list
 		review = ""
-		print(f"User '{user.id}' not found")
+		print(f"'{user.id}' has return to location,   ")
 	else:
-	    """
-		1. search if the database contains info with the same userid, location, type
-		2. if true, then get data from database and return
-		3. if not, then call the google places API to get the data and store into the database
+		visited = [False for i in range(5)]		
+		nearby_places = NearPlaces.getNearPlace(location, type, )
+		place_names = []
+		for place in nearby_places:
+			place_names.append(place['name'])
+		review = ""
 
-	    result = Table.query.filter_by(username=current_user.username, location=location, type=type).all()
-		if result:
-			places = result.LIST
-			visited = result.BEEN
-			return jsonify({"nearby_places": places, "visited": visited})
-		else:
-			nearby_places = NearPlaces.getNearPlace(location, type)
-			visited =  [False for i in range(5)]
-			db_data = {USER_ID: current_user.username, PASS: password, 
-				TYPE: type, LIST: nearby_places, BEEN: visited, REVIEW text[5]..., PRIMARY KEY (USER_ID)...}
-			insert db_data to database
-			return jsonify({"nearby_places": places, "visited": visited})
-
-		"""
-	    visited = [False for i in range(5)]
-	    nearby_places = NearPlaces.getNearPlace(location, type, )
-	    review = ""
-
-	    # store info for user into database
-	    DBHandler.update_list(dbhandler, user.id, location, type, nearby_places, visited, review)
-	    print(f"User '{user.id}' data updated and stored")
-
-	return jsonify({"nearby_places": nearby_places, "visited": visited, "review": review})
+		# store info for user into database
+		DBHandler.update_list(dbhandler, user.id, location, type, place_names, visited, review)     
+	print(f"Sending {user.id} to explore")
+	return jsonify({"nearby_places": nearby_places, "visited": visited, "review": review, "user_id": user.id})
 
 # Route and logic for explore
 @app.route("/explore", methods=["POST"])
@@ -166,9 +149,13 @@ def explore():
     places = request.json.get("places")
     been = request.json.get("been")
     review = request.json.get("review")
+    global user
     print(places)
     print(been)
+    print(review)
+    print(user.id)
     # update the database
+    DBHandler.update_review(dbhandler, user.id, been, review)
 	# add exception handle
     return flask.jsonify({"status": 200, "reason": "Success"})
 

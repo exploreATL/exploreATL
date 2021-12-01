@@ -203,7 +203,7 @@ class DBHandler:
 		info = cursor.fetchall()
 
 		# if no user exist, return error code 1
-		if info:
+		if info == None:
 			return 1
 
 		# update user values in user table
@@ -211,11 +211,7 @@ class DBHandler:
 			cursor.execute(
 	    		"""
 	    		UPDATE test_table3
-	    		SET LOCATION=%s,
-	    		SET TYPE=%s,
-	    		SET LIST=%s,
-	    		SET BEEN=%s,
-	    		SET REVIEW=%s,
+	    		SET LOCATION=%s, TYPE=%s, LIST=%s, BEEN=%s, REVIEW=%s
 	    		WHERE USER_ID=%s
 	    		""",
 	    		(location, loc_type, places_list, been, review, user_id, )
@@ -223,6 +219,63 @@ class DBHandler:
 			connect.commit()
 			connect.close()
 			print(f'Data Updated for {user_id}')
+			return 0
+		except ValueError:
+			print("Table Intsert error. Either already exist or other.")
+			connect.commit()
+			connect.close()
+			return 1
+
+
+	def update_review(self, user_id:str, been:list, review:str):
+		"""
+		Used the psycopg2 init functions to insert user's list and data. If it does throw error and pass.
+
+		Parameters
+	    ----------
+	    user_id : String (required)
+	        A String object for the user_id in table. 
+	    places_list: List (required)
+	    	A List object that contains the list of place namess to add to the table. 
+	    been : List (required)
+	    	A List object that indicates in same order as places_list which places have been visited
+		review : String (required)
+			A String object that has the 
+
+		Returns:
+			0 if added succesfully and 1 is there was an error
+		"""
+
+		# if arrays are too large, trim them
+		if len(been) > 5:
+			been = been[5:]
+
+		# init connection and cursor
+		connect = self.initdbconnect(self)
+		cursor = self.initdbcursor(self, connect)
+
+		# find user_id
+		cursor.execute("SELECT * from test_table3 WHERE USER_ID=%s", (user_id, ))
+		info = cursor.fetchall()
+		print(info)
+		# if no user exist, return error code 1
+		if info == None:
+			print("No User Info")
+			return 1
+		
+		# update user values in user table
+		try:
+			cursor.execute(
+	    		"""
+	    		UPDATE test_table3
+	    		SET BEEN=%s, REVIEW=%s
+	    		WHERE USER_ID=%s
+	    		""",
+	    		(been, review, user_id)
+			)
+			connect.commit()
+			connect.close()
+			print(f"Data Updated for  user '{user_id}'")
 			return 0
 		except ValueError:
 			print("Table Intsert error. Either already exist or other.")
@@ -248,5 +301,9 @@ class DBHandler:
 # result = DBHandler.lookup_user(DBHandler, username, password)
 # print(result[0][1])
 
-
+# #
+# userid = "123"
+# been = [True, False, False, False, True]
+# review = "This place would be great if the database started to work."
+# DBHandler.update_review(DBHandler, userid, been, review)
 
