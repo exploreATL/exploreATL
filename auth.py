@@ -21,18 +21,32 @@ from flask_login import UserMixin
 class User(UserMixin):
 	'''
 	Make Interface Class object User from UserMixin.
+
+	Attributes:
+		id:
+			The User's id string
+		location:
+			The User's save location.
+		loc_type:
+			The User's saved location type.
+		user_list:
+			The User's saved list of near_by places.
+		check_list:
+			The User's Savedlist of if they have been to a place.
+		review:
+			The Users Review of a location.
 	'''
 	
-	def __init__(self, id:str, location:str, loc_type:str, user_list:list, check_list:list, review_list:list):
+	def __init__(self, id:str, location:str, loc_type:str, user_list:list, check_list:list, review:str):
 		'''
-		User Class Init
+		User Class Init.
 		'''
 		self.id = id
 		self.location = location
 		self.loc_type = loc_type
 		self.user_list = user_list
 		self.check_list = check_list
-		self.review_list = review_list
+		self.review = review
 
 	
 	# UserMixin requires get
