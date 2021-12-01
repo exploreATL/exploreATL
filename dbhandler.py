@@ -234,17 +234,17 @@ class DBHandler:
 
 ### USED FOR TESTING ###
 # DBHandler.create_user_table(DBHandler)
-username = 'admin012341234'
-password = 'password'
-near_places = ["Hyatt Regency Atlanta", "Hard Rock Cafe", "The Sun Dial Restaurant", "Bar & View", "Ray's In the City"]
-loc_type = "restaurant"
-location = "midtown atlanta"
-been = [True, False, False, False, False]
-review = "I liked a place because of a thing that involved other things around that place and things that were inside that place"
+# username = 'admin012341234'
+# password = 'password'
+# near_places = ["Hyatt Regency Atlanta", "Hard Rock Cafe", "The Sun Dial Restaurant", "Bar & View", "Ray's In the City"]
+# loc_type = "restaurant"
+# location = "midtown atlanta"
+# been = [True, False, False, False, False]
+# review = "I liked a place because of a thing that involved other things around that place and things that were inside that place"
 
-DBHandler.insert_user(DBHandler, username, password, near_places)
-DBHandler.update_list(DBHandler, username, location, loc_type, near_places, been, review)
-print("did the update")
+# DBHandler.insert_user(DBHandler, username, password, near_places)
+# DBHandler.update_list(DBHandler, username, location, loc_type, near_places, been, review)
+# print("did the update")
 # result = DBHandler.lookup_user(DBHandler, username, password)
 # print(result[0][1])
 

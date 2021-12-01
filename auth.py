@@ -17,11 +17,16 @@ MIT Education License Preferred
 
 from flask_login import UserMixin
 
-# Make Interface Class object User from UserMixin
-class User(UserMixin):
 
-	# Class init
+class User(UserMixin):
+	'''
+	Make Interface Class object User from UserMixin.
+	'''
+	
 	def __init__(self, id:str, location:str, loc_type:str, user_list:list, check_list:list, review_list:list):
+		'''
+		User Class Init
+		'''
 		self.id = id
 		self.location = location
 		self.loc_type = loc_type
@@ -29,7 +34,11 @@ class User(UserMixin):
 		self.check_list = check_list
 		self.review_list = review_list
 
-	# requires get
+	
+	# UserMixin requires get
 	def get(id):
+		'''
+		User Get Id Functino required for UserMixin Interfacing.
+		'''
 		return id
 

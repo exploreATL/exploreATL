@@ -47,7 +47,7 @@ def load_user(id):
     return User.get(id)
 
 
-
+# Used for error handling and sercurity so that unsigned in users are redirected.
 @bp.route("/index")
 def index():
 	error = None
@@ -55,25 +55,28 @@ def index():
 		return redirect(url_for('login'))
 	return flask.render_template("index.html")
 
-
+# Load Blueprint for React 
 app.register_blueprint(bp)
 
-# Set User Login Page and Route.
+# Set Landing Page as the default page.
 @app.route("/")
 def first():
     return redirect("landpage")
 
 
+# Landing Page Routing.
 @app.route("/landpage")
 def landpage():
     return flask.render_template("landpage.html")
 
 
+# Sign up page rendering.
 @app.route("/signup")
 def signup():
     return flask.render_template("signup.html")
 
 
+# Sign up page logic for unregistered user.
 @app.route("/signup", methods=["POST"])
 def signup_post():
 	if request.method == 'POST':
@@ -89,11 +92,13 @@ def signup_post():
 		return flask.render_template("signup.html", error='User Already Exists')
 
 
+# Login page rendering.
 @app.route("/login")
 def login():
     return flask.render_template("login.html")
 
 
+# Login Page Logic for registered users.
 @app.route("/login", methods=["POST"])
 def login_post():
 	error = None
@@ -109,6 +114,7 @@ def login_post():
 	return render_template('login.html', error='User Not Found')
 
 
+# Near by logic for React Component
 @app.route("/nearby", methods=["POST"])
 def nearby():
 	location = request.json.get("location")
@@ -117,6 +123,7 @@ def nearby():
 
 	# If user goes to same location and location type
 	if user.id != None and location == user.location and type == user.loc_type:
+		# Load User's dat from User Object attributes.
 		location = user.location
 		type = user.loc_type
 		visited = user.check_list
@@ -124,9 +131,6 @@ def nearby():
 		review = ""
 		print(f"User '{user.id}' not found")
 	else:
-
-	    
-	    
 	    """
 		1. search if the database contains info with the same userid, location, type
 		2. if true, then get data from database and return
@@ -156,7 +160,7 @@ def nearby():
 
 	return jsonify({"nearby_places": nearby_places, "visited": visited})
 
-
+# Route and logic for explore
 @app.route("/explore", methods=["POST"])
 def explore():
     places = request.json.get("places")
@@ -167,7 +171,7 @@ def explore():
 	# add exception handle
     return flask.jsonify({"status": 200, "reason": "Success"})
 
-
+# redirects to  blueprint
 @app.route("/")
 def main():
     return flask.redirect(flask.url_for("bp.index"))
