@@ -105,6 +105,8 @@ class NearPlaces:
 
 
 # nearby_places = NearPlaces.getNearPlace(atl_locations[0], location_types[0])
+# place_names = []
 # for place in nearby_places:
-#     print(place)
+#     place_names.append(place['name'])
 
+# print(place_names)
