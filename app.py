@@ -152,6 +152,7 @@ def nearby():
         type = user.loc_type
         visited = user.check_list
         nearby_places = user.user_list
+        
         review = ""
         print(f"User '{user.id}' not found")
     else:
@@ -162,9 +163,13 @@ def nearby():
         )
         review = ""
 
+        places = []
+        for p in nearby_places:
+            places.append(p['name'])
+
         # store info for user into database
         DBHandler.update_list(
-            dbhandler, user.id, location, type, nearby_places, visited, review
+            dbhandler, user.id, location, type, places, visited, review
         )
         print(f"User '{user.id}' data updated and stored")
 
@@ -187,9 +192,7 @@ def explore():
     print(user.id)
     
     # update the database
-
     DBHandler.update_review(dbhandler, user.id, been, review)
-	  # add exception handle
 
     return flask.jsonify({"status": 200, "reason": "Success"})
 
