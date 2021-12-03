@@ -11,12 +11,15 @@ import {
 } from "antd";
 import { CarOutlined } from "@ant-design/icons";
 
+const request = require("request");
+
 function App() {
   // place is the variable that stores the nearby places;
   // atl represents the ATL location user chooses
   // explore is the number of explored places
   const { Option } = Select;
   const { TextArea } = Input;
+  const args = JSON.parse(document.getElementById("data").text);
   const [place, setPlace] = useState([]);
   const [showList, setShowList] = useState(true);
   const [atl, setAtl] = useState("downtown atlanta");
@@ -34,35 +37,40 @@ function App() {
     console.log(type);
   }
 
-  // Fetch data of nearby places after user chooses the location
+  // Show the nearby locations
   const submit_nearby = () => {
-    fetch("/nearby", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        location: atl,
-        type: type,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        var places_info = data["nearby_places"];
-        var places_visit = data["visited"];
-        console.log(places_info);
-        console.log(places_visit);
-        for (let i = 0; i < 5; i++) {
-          places_info[i]["visited"] = places_visit[i];
-        }
-        console.log(places_info);
-        setPlace(places_info);
-        console.log(place);
-        if (place.length > 0) {
-          setShowList(false);
-        }
-      });
+    setShowList(false);
   };
+
+  // Fetch data of nearby places after user chooses the location
+  useEffect(() => {
+    async function fetchData() {
+      fetch("/nearby", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          location: atl,
+          type: type,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          var places_info = data["nearby_places"];
+          var places_visit = data["visited"];
+          console.log(places_info);
+          console.log(places_visit);
+          for (let i = 0; i < 5; i++) {
+            places_info[i]["visited"] = places_visit[i];
+          }
+          console.log(places_info);
+          setPlace(places_info);
+          console.log(place);
+        });
+    }
+    fetchData();
+  }, [atl, type]);
 
   // Add the number of explored places
   const clickVisited = (e) => {
@@ -104,7 +112,7 @@ function App() {
       body: JSON.stringify({
         places: place,
         been: been,
-        review: note
+        review: note,
       }),
     });
   };
@@ -121,7 +129,7 @@ function App() {
       <PageHeader
         className="site-page-header"
         title="ExploreATL"
-        subTitle="Explore the Atlanta city"
+        subTitle={`Explore the Atlanta city, welcome ${args.username}`}
       />
       {showList ? (
         <>
