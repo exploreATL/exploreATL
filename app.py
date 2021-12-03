@@ -61,8 +61,8 @@ def load_user(id):
 @bp.route("/index")
 def index():
     error = None
-    # if not user.id:
-    #     return redirect(url_for("login"))
+    if not user.id:
+        return redirect(url_for("login"))
     data = json.dumps({"username": user.id})
     return flask.render_template("index.html", data=data)
 
@@ -71,13 +71,13 @@ def index():
 app.register_blueprint(bp)
 
 # # Set Landing Page as the default page.
-# @app.route("/")
-# def first():
-#     return redirect("landpage")
-
 @app.route("/")
 def first():
-    return redirect("index")
+    return redirect("landpage")
+
+# @app.route("/")
+# def first():
+#     return redirect("index")
 
 
 # Landing Page Routing.
@@ -142,54 +142,54 @@ def login_post():
 
 
 # Near by logic for React Component
-# @app.route("/nearby", methods=["POST"])
-# def nearby():
-#     location = request.json.get("location")
-#     type = request.json.get("type")
-#     global user
-
-#     # If user goes to same location and location type
-#     if user.id != None and location == user.location and type == user.loc_type:
-#         # Load User's dat from User Object attributes.
-#         location = user.location
-#         type = user.loc_type
-#         visited = user.check_list
-#         nearby_places = user.user_list
-#         review = ""
-#         print(f"User '{user.id}' not found")
-#     else:
-#         visited = [False for i in range(5)]
-#         nearby_places = NearPlaces.getNearPlace(
-#             location,
-#             type,
-#         )
-#         review = ""
-
-#         # store info for user into database
-#         DBHandler.update_list(
-#             dbhandler, user.id, location, type, nearby_places, visited, review
-#         )
-#         print(f"User '{user.id}' data updated and stored")
-
-#     return jsonify(
-#         {"nearby_places": nearby_places, "visited": visited, "review": review}
-#     )
-
 @app.route("/nearby", methods=["POST"])
 def nearby():
     location = request.json.get("location")
     type = request.json.get("type")
-    # global user
-    visited = [False for i in range(5)]
-    nearby_places = NearPlaces.getNearPlace(
-        location,
-        type,
-    )
-    review = ""
+    global user
+
+    # If user goes to same location and location type
+    if user.id != None and location == user.location and type == user.loc_type:
+        # Load User's dat from User Object attributes.
+        location = user.location
+        type = user.loc_type
+        visited = user.check_list
+        nearby_places = user.user_list
+        review = ""
+        print(f"User '{user.id}' not found")
+    else:
+        visited = [False for i in range(3)]
+        nearby_places = NearPlaces.getNearPlace(
+            location,
+            type,
+        )
+        review = ""
+
+        # store info for user into database
+        DBHandler.update_list(
+            dbhandler, user.id, location, type, nearby_places, visited, review
+        )
+        print(f"User '{user.id}' data updated and stored")
 
     return jsonify(
         {"nearby_places": nearby_places, "visited": visited, "review": review}
     )
+
+# @app.route("/nearby", methods=["POST"])
+# def nearby():
+#     location = request.json.get("location")
+#     type = request.json.get("type")
+#     # global user
+#     visited = [False for i in range(3)]
+#     nearby_places = NearPlaces.getNearPlace(
+#         location,
+#         type,
+#     )
+#     review = ""
+
+#     return jsonify(
+#         {"nearby_places": nearby_places, "visited": visited, "review": review}
+#     )
 
 
 
