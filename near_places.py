@@ -104,9 +104,3 @@ class NearPlaces:
             nearby_places.append(nearby_place)
         return nearby_places
     
-
-
-# nearby_places = NearPlaces.getNearPlace("downtown atlanta", "store")
-# for place in nearby_places:
-#     print(place)
-

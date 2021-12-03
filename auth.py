@@ -52,7 +52,7 @@ class User(UserMixin):
 	# UserMixin requires get
 	def get(id):
 		'''
-		User Get Id Functino required for UserMixin Interfacing.
+		User Get Id Function required for UserMixin Interfacing.
 		'''
 		return id
 

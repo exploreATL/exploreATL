@@ -140,6 +140,7 @@ def login_post():
 # Near by logic for React Component
 @app.route("/nearby", methods=["POST"])
 def nearby():
+
     location = request.json.get("location")
     type = request.json.get("type")
     global user
@@ -172,16 +173,24 @@ def nearby():
     )
 
 
+
 # Route and logic for explore
 @app.route("/explore", methods=["POST"])
 def explore():
     places = request.json.get("places")
     been = request.json.get("been")
     review = request.json.get("review")
+    global user
     print(places)
     print(been)
+    print(review)
+    print(user.id)
+    
     # update the database
-    # add exception handle
+
+    DBHandler.update_review(dbhandler, user.id, been, review)
+	  # add exception handle
+
     return flask.jsonify({"status": 200, "reason": "Success"})
 
 
