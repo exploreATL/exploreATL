@@ -22,24 +22,6 @@ load_dotenv(find_dotenv())
 # Get the Google Map API key
 API_KEY = os.getenv("API_KEY")
 
-atl_locations = [
-    "downtown atlanta",
-    "buckhead atlanta",
-    "sandy springs",
-    "johns creek",
-    "norcross atlanta",
-]
-location_types = [
-    "restaurant",
-    "museum",
-    "park",
-    "university",
-    "store",
-    "city_hall",
-    "amusement_park",
-    "library",
-]
-
 class NearPlaces:
     def getGeometry(atl_location):
         '''
@@ -65,6 +47,25 @@ class NearPlaces:
         lat = geometry["lat"]
         lng = geometry["lng"]
         return lat, lng
+
+    def getImg(name):
+        REACT_APP_rapid = os.getenv("REACT_APP_rapid")
+        url = "https://bing-image-search1.p.rapidapi.com/images/search"
+        name = name + " atlanta"
+        querystring = {"q": name}
+
+        headers = {
+            'x-rapidapi-host': "bing-image-search1.p.rapidapi.com",
+            'x-rapidapi-key': REACT_APP_rapid
+            }
+
+        response = requests.request("GET", url, headers=headers, params=querystring).json()
+        try:
+            nearby_img = response["value"][0]["contentUrl"]
+        except:
+            pass
+
+        return nearby_img
 
 
     def getNearPlace(location, location_type):
@@ -99,12 +100,13 @@ class NearPlaces:
         for place in places:
             nearby_place = {}
             nearby_place["name"] = place["name"]
-            nearby_place["photo_reference"] = place["photos"][0]["photo_reference"]
+            nearby_place["photo_reference"] = NearPlaces.getImg(nearby_place["name"])
             nearby_places.append(nearby_place)
         return nearby_places
+    
 
 
-# nearby_places = NearPlaces.getNearPlace(atl_locations[0], location_types[0])
+# nearby_places = NearPlaces.getNearPlace("downtown atlanta", "store")
 # for place in nearby_places:
 #     print(place)
 
