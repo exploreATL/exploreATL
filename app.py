@@ -154,6 +154,7 @@ def explore():
     print(been)
     print(review)
     print(user.id)
+    
     # update the database
     DBHandler.update_review(dbhandler, user.id, been, review)
 	# add exception handle
