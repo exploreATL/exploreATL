@@ -75,10 +75,6 @@ app.register_blueprint(bp)
 def first():
     return redirect("landpage")
 
-# @app.route("/")
-# def first():
-#     return redirect("index")
-
 
 # Landing Page Routing.
 @app.route("/landpage")
@@ -175,23 +171,6 @@ def nearby():
     return jsonify(
         {"nearby_places": nearby_places, "visited": visited, "review": review}
     )
-
-# @app.route("/nearby", methods=["POST"])
-# def nearby():
-#     location = request.json.get("location")
-#     type = request.json.get("type")
-#     # global user
-#     visited = [False for i in range(3)]
-#     nearby_places = NearPlaces.getNearPlace(
-#         location,
-#         type,
-#     )
-#     review = ""
-
-#     return jsonify(
-#         {"nearby_places": nearby_places, "visited": visited, "review": review}
-#     )
-
 
 
 

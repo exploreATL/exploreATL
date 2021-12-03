@@ -6,7 +6,6 @@ import {
   Space,
   PageHeader,
   Checkbox,
-  Select,
   Input,
   Card,
   Row,
@@ -18,15 +17,11 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 
-const request = require("request");
-
 function App() {
   // place is the variable that stores the nearby places;
   // atl represents the ATL location user chooses
   // explore is the number of explored places
-  const { Option } = Select;
   const { TextArea } = Input;
-  const { Meta } = Card;
   const args = JSON.parse(document.getElementById("data").text);
   const [place, setPlace] = useState([]);
   const [showList, setShowList] = useState(true);
@@ -36,14 +31,15 @@ function App() {
   const [been, setBeen] = useState([false, false, false, false, false]);
   const [note, setNote] = useState("");
 
+  //Set the name of ATL location
   const chooseAtl = (e) => {
     setAtl(e.target.value);
   };
 
-  function chooseType(value) {
-    setType(value);
-    console.log(type);
-  }
+  //Set the type of nearby locations
+  const ChooseType = (e) => {
+    setType(e.target.value);
+  };
 
   // Show the nearby locations
   const submit_nearby = () => {
@@ -67,12 +63,9 @@ function App() {
         .then((data) => {
           var places_info = data["nearby_places"];
           var places_visit = data["visited"];
-          console.log(places_info);
-          console.log(places_visit);
           for (let i = 0; i < 3; i++) {
             places_info[i]["visited"] = places_visit[i];
           }
-          console.log(places_info);
           setPlace(places_info);
           console.log(place);
         });
@@ -80,34 +73,8 @@ function App() {
     fetchData();
   }, [atl, type]);
 
-  // Fetch images of nearby places
-  useEffect(() => {
-    for (let i = 0; i < place.length; i++) {
-      const options = {
-        method: "GET",
-        url: "https://bing-image-search1.p.rapidapi.com/images/search",
-        qs: { q: place[i]["name"] },
-        headers: {
-          "x-rapidapi-host": "bing-image-search1.p.rapidapi.com",
-          "x-rapidapi-key": `${process.env.REACT_APP_rapid}`,
-          useQueryString: true,
-        },
-      };
-
-      request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-        const result = JSON.parse(body).value[0].contentUrl;
-        place[i]["img"] = result;
-        // new array.append(result);
-        console.log(place);
-        console.log(result);
-      });
-    }
-  }, [place]);
-
   // Add the number of explored places
   const clickVisited = (e) => {
-    console.log(e.target.value);
     var set_been = been;
     set_been[e.target.value] = e.target.checked;
     setBeen(set_been);
@@ -150,11 +117,10 @@ function App() {
     });
   };
 
+  //Go back to the ATL location selection page
   const goback = () => {
     setShowList(true);
     setExplore(0);
-    // setPlace([]);
-    // setBeen([false, false, false, false, false]);
   };
 
   return (
@@ -200,7 +166,6 @@ function App() {
                       </div>
                     </Col>
                   </Row>
-
                   <Row>
                     <Col span={8}>
                       <div className="atl_info l">
@@ -226,7 +191,6 @@ function App() {
                       />
                     </Col>
                   </Row>
-
                   <Row>
                     <Col span={16}>
                       <img
@@ -252,7 +216,6 @@ function App() {
                       </div>
                     </Col>
                   </Row>
-
                   <Row>
                     <Col span={8}>
                       <div className="atl_info l">
@@ -274,7 +237,6 @@ function App() {
                       />
                     </Col>
                   </Row>
-
                   <Row>
                     <Col span={16}>
                       <img
@@ -301,7 +263,6 @@ function App() {
               </Radio.Group>
             </div>
           </div>
-
           <div className="choose_title type">
             <CompassOutlined />
             <span>Choose the type of nearby locations:</span>
@@ -311,7 +272,7 @@ function App() {
             <Radio.Group
               defaultValue="restaurant"
               size="large"
-              onChange={chooseType}
+              onChange={ChooseType}
             >
               <Radio.Button value="restaurant">Restaurant</Radio.Button>
               <Radio.Button value="museum">Museum</Radio.Button>
@@ -345,7 +306,7 @@ function App() {
                     <Card
                       hoverable
                       style={{ width: 500 }}
-                      cover={<img src={item["img"]} />}
+                      cover={<img src={item["photo_reference"]} />}
                     >
                       <Checkbox
                         onChange={clickVisited}
@@ -368,6 +329,7 @@ function App() {
                 size="large"
                 placeholder="Write down your experience in the place..."
                 allowClear
+                autoSize={{ minRows: 3, maxRows: 6 }}
                 onChange={getNote}
               />
             </div>
