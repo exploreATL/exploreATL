@@ -76,7 +76,7 @@ class NearPlaces:
         location_type(string): the type of nearby locations
 
         Returns:
-        List nearby_places with 5 elements, each element is a nearby place with fields
+        List nearby_places with 3 elements, each element is a nearby place with fields
         of geometry location(lat, lng), name, and photo reference
         '''
         # Get the Google Map API key
@@ -89,8 +89,8 @@ class NearPlaces:
         response = requests.get(url).json()
         # Get the frist five elements of return locations
         try:
-            if len(response["results"]) > 5:
-                places = response["results"][0:5]
+            if len(response["results"]) > 3:
+                places = response["results"][0:3]
             else:
                 places = response["results"]
         except:
