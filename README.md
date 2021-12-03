@@ -34,3 +34,13 @@ Second, you will have to install these dependencies in this order:
 
 Then to create the build for the app run `npm run build`
 Finally, you will be able to use `python app.py` to launch the app onto a local host.
+
+## Extra Notes:
+
+NOTE: Linting and formatting was done with black.
+
+NOTE: The Kanban Board is in the Organization not the just Repo.
+
+NOTE: Continous interegation is in the Heroku deployment.
+
+
