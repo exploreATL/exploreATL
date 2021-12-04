@@ -151,10 +151,13 @@ def nearby():
         location = user.location
         type = user.loc_type
         visited = user.check_list
-        nearby_places = user.user_list
+        nearby_places = NearPlaces.getNearPlace(
+            location,
+            type,
+        )
         
         review = ""
-        print(f"User '{user.id}' not found")
+        print(f"User '{user.id}' found")
     else:
         visited = [False for i in range(3)]
         nearby_places = NearPlaces.getNearPlace(
