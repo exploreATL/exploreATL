@@ -40,6 +40,7 @@ Finally, you will be able to use `python app.py` to launch the app onto a local 
 NOTE: Linting and formatting was done with black.
 
 NOTE: The Kanban Board is in the Organization not the just Repo.
+https://github.com/orgs/exploreATL/projects
 
 NOTE: Continous interegation is in the Heroku deployment.
 
