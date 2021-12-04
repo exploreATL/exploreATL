@@ -2,7 +2,9 @@ import unittest
 from dbhandler import DBHandler
 
 class TestUserInsert(unittest.TestCase):
-    ''
+    '''
+    Unit Test for Server Database Handling with Server and Client Side Handoff.
+    '''
     def test_insert(self):
         """
         Test for user insert failure when there is already a user registered under that name
